@@ -8,8 +8,9 @@ namespace UserManagementService.IRepository
     {
         Task<string> RegisterUser(AddUpdateUserRequest userRequestModel);
 
-        Task<LoginStatus> LoginUser(LoginRequest loginRequestModel);
-        Task<LoginStatus> LoginAdmin(LoginRequest loginRequestModel);
+        Task<LoginStatus> LoginUser(LoginRequest loginRequestModel); 
+        //Task<LoginStatus> LoginAdmin(LoginRequest loginRequestModel);
+       
         Task<OTPValidateStatus> ValidateOTP(string uid, string otp, bool isToken = false);
 
         Task<OTPSentStatus> ResendOTP(string uniqueId);

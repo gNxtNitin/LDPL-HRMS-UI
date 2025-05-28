@@ -57,6 +57,7 @@ namespace LDPLWEBUI.Controllers
 
             return View(new UserLogin());
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogIn(UserLogin userLogin)
@@ -70,7 +71,6 @@ namespace LDPLWEBUI.Controllers
                     return View(userLogin);
                 }
 
-
                 //var kk = PasswordConfig.GetMd5Hash(userLogin.Password);
                 LoginRequest loginRequest = new LoginRequest()
                 {
@@ -83,7 +83,8 @@ namespace LDPLWEBUI.Controllers
                     IsLoginWithOtp = false
                 };
 
-                LoginStatus loginStatus = await _accountRepository.LoginAdmin(loginRequest);
+                LoginStatus loginStatus = await _accountRepository.LoginUser(loginRequest);
+                
                 if (loginStatus.Success)
                 {
 

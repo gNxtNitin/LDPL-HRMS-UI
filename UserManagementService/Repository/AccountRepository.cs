@@ -30,11 +30,57 @@ namespace UserManagementService.Repository
             return string.IsNullOrEmpty(val) ? false : true;
         }
 
-        public async Task<LoginStatus> LoginAdmin(LoginRequest loginRequestModel)
+        //public async Task<LoginStatus> LoginAdmin(LoginRequest loginRequestModel)
+        //{
+
+
+        //    APIResponse respBody = await _apiClientHelper.PostAsync<LoginRequest, APIResponse>("/api/Auth/AuthenticateAdmin", loginRequestModel);
+
+        //    if (respBody.Code > 0)
+        //    {
+
+        //        string token;
+        //        string userId;
+        //        string empId;
+        //        string role;
+        //        string uname;
+
+        //        using (JsonDocument doc = JsonDocument.Parse(respBody.Data.ToString()))
+        //        {
+        //            token = doc.RootElement.GetProperty("token").GetString();
+        //            userId = doc.RootElement.GetProperty("userId").GetString();
+        //            empId = doc.RootElement.GetProperty("empId").GetString();
+        //            role = doc.RootElement.GetProperty("role").GetString();
+        //            uname = doc.RootElement.GetProperty("name").GetString();
+        //        }
+
+
+        //        return new LoginStatus
+        //        {
+        //            //CompanyName = companyName,
+        //            EmpId = empId,
+        //            Role = role,
+        //            UserName = uname,
+        //            Success = true,
+        //            IsOtpRequired = false,
+        //            UserId = userId,
+        //            Token = token,
+        //            PasswordState = respBody.Code == 202 ? PasswordStatus.AboutToExpire : PasswordStatus.Valid,
+        //            Message = respBody.Code == 202 ? respBody.Msg : string.Empty
+        //        };
+
+
+        //    }
+
+        //    return new LoginStatus { Success = false, IsOtpRequired = _authOptions.OTPRequired };
+        //}
+
+
+        public async Task<LoginStatus> LoginUser(LoginRequest loginRequestModel)
         {
 
 
-            APIResponse respBody = await _apiClientHelper.PostAsync<LoginRequest, APIResponse>("/api/Auth/AuthenticateAdmin", loginRequestModel);
+            APIResponse respBody = await _apiClientHelper.PostAsync<LoginRequest, APIResponse>("/api/Auth/AuthenticateUser", loginRequestModel);
 
             if (respBody.Code > 0)
             {
@@ -51,7 +97,7 @@ namespace UserManagementService.Repository
                     userId = doc.RootElement.GetProperty("userId").GetString();
                     empId = doc.RootElement.GetProperty("empId").GetString();
                     role = doc.RootElement.GetProperty("role").GetString();
-                    uname = doc.RootElement.GetProperty("name").GetString();
+                    uname = doc.RootElement.GetProperty("uName").GetString();
                 }
 
 
@@ -71,51 +117,6 @@ namespace UserManagementService.Repository
                 };
 
 
-            }
-
-            return new LoginStatus { Success = false, IsOtpRequired = _authOptions.OTPRequired };
-        }
-
-
-        public async Task<LoginStatus> LoginUser(LoginRequest loginRequestModel)
-        {
-           
-
-            APIResponse respBody = await _apiClientHelper.PostAsync<LoginRequest, APIResponse>("/api/Auth/AuthenticateUser", loginRequestModel);
-
-            if (respBody.Code > 0)
-            {
-
-                string token;
-                string userId;
-                string companyName;
-                string uname;
-                string role;
-
-                using (JsonDocument doc = JsonDocument.Parse(respBody.Data.ToString()))
-                {
-                    token = doc.RootElement.GetProperty("token").GetString();
-                    userId = doc.RootElement.GetProperty("userId").GetString();
-                    companyName = doc.RootElement.GetProperty("companyname").GetString();
-                    uname = doc.RootElement.GetProperty("name").GetString();
-                    role = doc.RootElement.GetProperty("role").GetString();
-                }
-
-
-                return new LoginStatus
-                {
-                    CompanyName = companyName,
-                    UserName = uname,
-                    Role = role,
-                    Success = true,
-                    IsOtpRequired = false,
-                    UserId = userId,
-                    Token = token,
-                    PasswordState = respBody.Code == 202 ? PasswordStatus.AboutToExpire : PasswordStatus.Valid,
-                    Message = respBody.Code == 202 ? respBody.Msg : string.Empty
-                };
-
-                
             }
 
             return new LoginStatus { Success = false, IsOtpRequired = _authOptions.OTPRequired };
