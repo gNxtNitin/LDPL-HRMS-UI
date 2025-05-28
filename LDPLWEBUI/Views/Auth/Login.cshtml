@@ -52,13 +52,13 @@
                             </a>
                         </div>
                         <!-- Logo -->
-                        <h4 class="mb-1">Customer Portal</h4>
+                        <h4 class="mb-1">Admin Portal</h4>
                         <p class="mb-6">Please sign-in to your account</p>
 
                         <form id="loginForm" class="mb-4" asp-asp-controller="Auth" asp-action="Login" method="POST" asp-antiforgery="true">
                             <div class="mb-6">
-                                <label for="CustomerId" class="form-label">Customer ID</label>
-                                <input type="text" class="form-control" id="emailOrPhone" name="CustomerId" asp-for="EmpCode" placeholder="Enter your Cutomer ID" autofocus>
+                                <label for="EmailId" class="form-label">Employee ID</label>
+                                <input type="text" class="form-control" id="emailOrPhone" name="EmpCode" asp-for="EmpCode" placeholder="Enter your Employee ID" autofocus>
                                 <span asp-validation-for="EmpCode" class="text-danger"></span>
                             </div>
                             <div class="mb-6 form-password-toggle">
@@ -68,37 +68,6 @@
                                     <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
-                            </div>
-                            <div class="mb-6">
-                                <label for="CompanyCode" class="form-label">Select Company Name</label>
-                                <select class="form-select" id="companycode" name="CompanyCode" asp-for="CompanyCode" aria-label="Select Company" required>
-
-                                    <option value="">Select Company</option>
-                                    @if (ViewBag.Companies != null)
-                                    {
-                                        var company = ViewBag.Companies;
-                                        if (company.Count == 1)
-                                        {
-                                            <option value="@company[0].CompanyCode" selected>@company[0].CompanyName</option>
-                                        }
-                                        else
-                                        {
-                                            for (int i = 0; i < company.Count; i++)
-                                            {
-                                                <option value="@company[i].CompanyCode">@company[i].CompanyName</option>
-                                            }
-                                        }
-
-                                    }
-                                    else{
-                                        ViewData["LoginErrorMessage"] = "Failed to load company list.";
-                                    }
-                                                            }
-                                    @* <option value="1">LDPL PUBLISHERS P. LTD</option>
-                                <option value="2">LDPL EDUCATION & DIGITAL RESOURCES</option> *@
-
-                                </select>
-                                <span asp-validation-for="CompanyCode" class="text-danger"></span>
                             </div>
 
                             <div class="mb-6 captcha-container">
