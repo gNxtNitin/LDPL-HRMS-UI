@@ -16,6 +16,7 @@ namespace UserManagementService.Models
 
     public class LoginStatus
     {
+        public int? RespCode { get; set; } = 0;
         public bool Success { get; set; }
 
         public string Message { get; set; } = string.Empty;
