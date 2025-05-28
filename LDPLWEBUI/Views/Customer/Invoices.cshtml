@@ -1,0 +1,269 @@
+﻿@{
+    Layout = "_DashboardLayout";
+}
+
+@section PageStyles {
+
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/flatpickr/flatpickr.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/jquery-timepicker/jquery-timepicker.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/pickr/pickr-themes.css" />
+    <style>
+        .input-cstm{
+            padding-left: 0.25rem!important;
+        }
+        .my-cstm {
+            display: flex;
+           /*  justify-content: center; */
+            align-items: center;
+        }
+        /* .modal-gr {
+            padding:1rem!important;
+        } */
+
+        html:not([dir=rtl]) .modal .btn-close {
+            transform: translate(0px, 0px) !important;
+        }
+
+        .modal-body {
+            padding: 0 !important;
+        }
+
+        .modal-simple .modal-content {
+            padding: 1rem;
+        }
+        #previewImage{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+}
+
+
+@section PageScripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/app-assets/vendor/libs/flatpickr/flatpickr.js"></script>
+    <script src="~/app-assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/app-assets/vendor/libs/bootstrap-daterangepicker/bootstrap-daterangepicker.js"></script>
+    <script src="~/app-assets/vendor/libs/jquery-timepicker/jquery-timepicker.js"></script>
+    <script src="~/app-assets/vendor/libs/pickr/pickr.js"></script>
+     <script src="~/js/InvoiceTable.js"></script> 
+    @* <script src="~/app-assets/js/app-user-list.js"></script> *@
+
+}
+<div class="modal fade" id="shareProject" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-simple modal-enable-otp modal-share-project modal-dialog-centered">
+        <div class="modal-content modal-gr">
+            <div class="modal-body modal-gr">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center">
+                    <h4 class="mb-2">Goods Receipt Number </h4>
+                    @*  <p>Share project with a team member</p> *@
+                </div>
+                <div class="modal-body text-center">
+                    <img id="previewImage" src="" class="img-fluid" alt="Image preview" />
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<div class="card">
+    @* <div class="row">
+    <div class="col-md-4 input-group input-group-merge ">
+       
+        <input type="text" class="date-picker form-control" id="fromD" placeholder="DD/MM/YYYY" class="form-control" />
+        <span class=" input-group-text" id="text-to-speech-addon">
+            <i class="ti ti-microphone cursor-pointer speech-to-text"></i>
+        </span>
+    </div>
+    <div class=" col-md-4 input-group input-group-merge ">
+
+        <input type="text" class="date-picker form-control" id="fromD" placeholder="DD/MM/YYYY" class="form-control" />
+        <span class=" input-group-text" id="text-to-speech-addon">
+            <i class="ti ti-microphone cursor-pointer speech-to-text"></i>
+        </span>
+    </div>
+    <div class="col-md-4 col-12 mx-2">
+        <button class="btn btn-primary " style="margin-top:24px;" id="btn-submit" type="button">Apply Filter</button>
+    </div>
+    </div> *@
+   @*  <div class="d-flex px-3 mt-1">
+        <h5 class="card-header">Filter By Date</h5>
+        
+        <div class="col-md-2 col-12  mx-2 input-group input-group-merge">
+            <label for="bs-datepicker-basic" class="form-label">From</label>
+            <input type="text" class="date-picker form-control" id="fromD" placeholder="DD/MM/YYYY" class="form-control" />
+            
+        </div>
+        <div class="col-md-2 col-12  mx-2">
+            <label for="bs-datepicker-format" class="form-label">To</label>
+            <input type="text" class="date-picker form-control" id="toD" placeholder="DD/MM/YYYY" class="form-control" />
+        </div>
+        <div class="col-md-2 col-12 mx-2">
+            <button class="btn btn-primary " style="margin-top:24px;" id="btn-submit" type="button">Apply Filter</button>
+        </div>
+    </div> *@
+    <div class="card-datatable table-responsive">
+        <table class="datatables-invoice table table-hover dt-table-striped">
+            <thead class="border-top bg-menu-theme text-white fw-2">
+                <tr>
+                    <th></th>
+                    <th>Invoice Number</th>
+                    <th>Invoice Date</th>
+                    <th>Invoice Amount</th>
+                    <th>Customer Code</th>
+                    <th>Dispatch Number</th>
+                    <th>GR Number</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<button type="button" class=" modal-weigh" style="display:none;" data-bs-toggle="modal" data-bs-target="#shareProject">
+    Show
+</button>
+<script>
+    $(document).ready(function () {
+        var a = @Html.Raw(Json.Serialize(ViewBag.ErCode));
+        var b = @Html.Raw(Json.Serialize(ViewBag.ErMsg));
+
+        if (a != null) {
+             a == "1" ?  ToastWrapper.success(b): ToastWrapper.error(b) ;
+             a = null;
+        }
+
+    //     $('.modal-weigh').on('click', function () {
+    //         alert(1);
+    //     });
+     })
+</script>
+<script>
+        function convertToMMDDYYYY(dateStr) {
+      // Split the string by '/'
+      const parts = dateStr.split('/');
+
+      if (parts.length !== 3) return ''; // Invalid format check
+
+      const [day, month, year] = parts;
+
+      return `${month}/${day}/${year}`;
+    }
+        function formatDateToDDMMYYYY(date) {
+      let day = date.getDate().toString().padStart(2, '0');
+      let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+      let year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+ </script>
+@* <script>
+    $(document).ready(function () {
+        let today = new Date();
+        $('#toD').val(formatDateToDDMMYYYY(today));
+        today.setMonth(today.getMonth() - 3);
+        $('#fromD').val(formatDateToDDMMYYYY(today));
+       document.getElementById('btn-submit').addEventListener('click', function () {
+           if($('#toD').val() > $('#fromD').val() )
+           {
+               console.log(1);
+           }
+           fromDateStr = encodeURIComponent(convertToMMDDYYYY($('#fromD').val()));
+         
+           
+           toDateStr = encodeURIComponent(convertToMMDDYYYY($('#toD').val()));
+           var urlAj = '/customer/GetOrderInvoice?cid1=' + str1 + '&cid2=' + fromDateStr + '&cid3=' + toDateStr;
+           user_table2.ajax.url(urlAj).load();
+           //console.log(fromDateStr);
+       });
+    })
+</script> *@
+<script>
+    function datePickerFunc () {
+        $('.date-picker').flatpickr({
+            monthSelectorType: 'static',
+            disableMobile: true,
+            //customise format here
+            dateFormat: 'd/m/Y'
+        });
+         let today = new Date();
+        $('#toD').val(formatDateToDDMMYYYY(today));
+        today.setMonth(today.getMonth() - 3);
+        $('#fromD').val(formatDateToDDMMYYYY(today));
+       document.getElementById('btn-submit').addEventListener('click', function () {
+           if($('#toD').val() > $('#fromD').val() )
+           {
+               console.log(1);
+           }
+           fromDateStr = encodeURIComponent(convertToMMDDYYYY($('#fromD').val()));
+
+
+           toDateStr = encodeURIComponent(convertToMMDDYYYY($('#toD').val()));
+           var urlAj = '/customer/GetOrderInvoice?cid1=' + str1 + '&cid2=' + fromDateStr + '&cid3=' + toDateStr;
+           user_table2.ajax.url(urlAj).load();
+           //console.log(fromDateStr);
+       });
+    }
+</script>
+<script>
+    function grdataShow () {
+        $('.datatables-invoice').on('click', '.view-s-gr', function() {
+            var btn = $(this);
+            var row = $(this).closest('tr');
+            
+
+           var rowData = $('.datatables-invoice').DataTable().row(row).data();
+            //console.log(rowData);
+            //return;
+        fetch(`/Customer/GetGR?sr1=${rowData.grnumber}`)
+        .then(response => {
+            if (!response.ok) throw new Error("GR not found");
+            return response.blob();
+        })
+        .then(blob => {
+            const imageUrl = URL.createObjectURL(blob);
+            $('#previewImage').attr('src', imageUrl);
+            $('.modal-weigh').trigger('click');
+        })
+        .catch(error => {
+            ToastWrapper.error(error);
+        });
+             
+        });
+    }
+</script>
+<script>
+    function InvoiceGen () {
+        $('.datatables-invoice').on('click', '.view-s-invoice', function() {
+            var btn = $(this);
+            var row = $(this).closest('tr');
+
+
+           var rowData = $('.datatables-invoice').DataTable().row(row).data();
+            console.log(rowData);
+            window.location.href = '/Customer/ViewInvoices?cid=' + rowData.mkey;
+        // fetch(`/Customer/GetGR?sr1=${rowData.grnumber}`)
+        // .then(response => {
+        //     if (!response.ok) throw new Error("GR not found");
+        //     return response.blob();
+        // })
+        // .then(blob => {
+        //     const imageUrl = URL.createObjectURL(blob);
+        //     $('#previewImage').attr('src', imageUrl);
+        //     $('.modal-weigh').trigger('click');
+        // })
+        // .catch(error => {
+        //     ToastWrapper.error(error);
+        // });
+
+        });
+    }
+</script>

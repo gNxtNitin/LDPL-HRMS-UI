@@ -1,0 +1,582 @@
+﻿@{
+    Layout = "_DashboardLayout";
+    ViewBag.Title = "Schools";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        .form-label.required::after {
+            content: " *";
+            color: red;
+        }
+    </style>
+}
+
+
+@section PageScripts
+{
+
+    <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/js/User/Schools.js"></script>
+    @* <script src="~/js/OrderMaster.js"></script>
+    <script src="~/js/InvoiceTable.js"></script> *@
+    @* <script src="~/app-assets/js/app-user-list.js"></script> *@
+}
+
+
+
+<!--This is the modal-->
+<div class="offcanvas offcanvas-end" id="add-new-record">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title" id="exampleModalLabel">Add School</h5>
+        <button type="button"
+                class="btn-close text-reset"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body flex-grow-1">
+        <form class="add-new-record pt-0 row g-2" id="form-add-new-record" onsubmit="return false">
+
+            <!-- flag input -->
+            <input type="hidden" name="dt-flag" id="dt-flag" value="C" />
+            <input type="hidden" name="dt-scode" id="dt-scode" />
+
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="empid" class="form-label">EMPID:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-empid" id="empid" name="empid" placeholder="Employee ID" maxlength="20" disabled>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="role" class="form-label">Role:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-role" id="role" name="role" placeholder="Role" maxlength="100" disabled>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="empname" class="form-label">Name:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-empname" id="empname" name="empname" placeholder="Employee Name" maxlength="100" disabled>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="empdep" class="form-label">Department:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-empdep" id="empdep" name="empdep" placeholder="Department" maxlength="100" disabled>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="empman" class="form-label">Manager:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-empman" id="cname" name="empman" placeholder="Manager" maxlength="100" disabled>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="school" class="form-label required">School/Seller:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-school" id="cname" name="school" placeholder="School/Seller" maxlength="200">
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="address" class="form-label required">Address:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-address" id="address" name="address" placeholder="Address" maxlength="200">
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="state" class="form-label required">State:</label>
+                </div>
+                <div class=" ">
+                    <select class="form-select dt-state select2-dd" id="state" name="state" aria-label="Select State" required>
+
+                        <option value="">Select State</option>
+
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="city" class="form-label required">City:</label>
+                </div>
+                <div class=" ">
+                    <select class="form-select dt-city select2-dd" id="city" name="city" aria-label="Select City" required>
+
+                        <option value="">Select City</option>
+
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="vendor" class="form-label required">Customer Type:</label>
+                </div>
+                <div class=" ">
+                    <select class="form-select dt-vendor" id="vendor" name="vendor" aria-label="Select Customer Type" required>
+
+                        <option value="">Select Customer Type</option>
+
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="scat" class="form-label required">School Category:</label>
+                </div>
+                <div class=" ">
+                    <select class="form-select dt-scat" id="scat" name="scat" aria-label="Select School Category" required>
+
+                        <option value="">Select School Category</option>
+
+
+                    </select>
+                </div>
+            </div>
+
+
+
+            <div class="col-sm-12">
+                <button class="btn btn-danger m-2" data-bs-dismiss="offcanvas" id="btn-cancel" type="button">Cancel</button>
+                <button class="btn btn-primary m-2" id="btn-submit" type="button">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Tjis is the main portal;-->
+<div class="card">
+    <div class="card-datatable table-responsive">
+        <table class="datatables-schools table table-hover dt-table-striped">
+            <thead class="border-top bg-menu-theme text-white fw-2">
+                <tr>
+
+
+                    @*  <th>S. No.</th> *@
+                    <th>School Code</th>
+
+                    <th>School Name</th>
+                    <th>School Type</th>
+                    <th>School Address</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>EMP ID</th>
+                    @* <th>EMP Name</th> *@
+                    <th>School Category</th>
+                    @*  <th>Account Manager</th>
+                    <th>Incharge</th> *@
+                    <th>Created Date</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script>
+    var state, city, vendor,category, user;
+    $(document).ready(function () {
+
+        $.get("/user/GetData", { sr1: "R" }, function(response) {
+            //console.log(response);
+            var resp = JSON.parse(response);
+            // Parsing Each list to each Variable required
+            resp.forEach(function(item, index) {
+                    switch (index) {
+                        case 0:
+                            user = JSON.parse(item);
+                            break;
+                        case 1:
+                            vendor = JSON.parse(item);
+                            break;
+                        case 2:
+                            category = JSON.parse(item);
+                            break;
+                        case 3:
+                            state = JSON.parse(item);
+                            break;
+                        case 4:
+                            city = JSON.parse(item);
+                            break;
+                        default:
+                            // fallback if needed
+                    }
+
+            });
+
+            // For user Input fields
+            user.forEach(function (item) {
+                $('.dt-empid').val(item.EMPID);
+                $('.dt-role').val(item.USER_ROLE_ID);
+                $('.dt-empname').val(item.ENAME);
+                $('.dt-empdep').val(item.DEPARTMENT);
+                $('.dt-empman').val(item.ACCOUNT_MANAGER);
+            });
+            // For Vendor Select input
+            vendor.forEach(function (item) {
+                //console.log(item.VENDOR_TYPE) ;
+                $('.dt-vendor').append(`<option value="${item.VENDOR_TYPE}">${item.VENDOR_TYPE}</option>`);
+            });
+            // For CAtegory select input
+            category.forEach(function (item) {
+                $('.dt-scat').append(`<option value="${item.CATEGORY}">${item.CATEGORY}</option>`);
+            });
+            // For STate select input
+            state.forEach(function (item) {
+                $('.dt-state').append(`<option value="${item.STATE_ID}">${item.STATE_NAME}</option>`);
+            });
+            // console.log(state);
+            // console.log(city);
+            // On change event for filtering cities based on state
+            $('.dt-state').on('change', function() {
+                let selectedState = $(this).val();
+                // Filtering Values
+                let filteredCities = city.filter(c => c.STATECODE == selectedState);
+
+                $('.dt-city').empty().append('<option value="">Select City</option>');
+                // Appending City select input values
+                filteredCities.forEach(function(city) {
+                    $('.dt-city').append(`<option value="${city.CITY_ID}">${city.CITY_NAME}</option>`);
+                });
+            });
+
+
+        });
+    })
+</script>
+
+<script>
+    var fv;
+    $(document).ready(function () {
+         fv = FormValidation.formValidation(document.getElementById('form-add-new-record'), {
+          fields: {
+            empid: {
+              validators: {
+                notEmpty: {
+                  message: 'Employee ID is required.'
+                }
+              }
+            },
+            role: {
+              validators: {
+                notEmpty: {
+                  message: 'Role is required.'
+                }
+              }
+            },
+            empname: {
+              validators: {
+                notEmpty: {
+                  message: 'Employee Name is required.'
+                }
+              }
+            },
+            empdep: {
+              validators: {
+                notEmpty: {
+                  message: 'Department is required.'
+                }
+              }
+            },
+            // empman: {
+            //   validators: {
+            //     notEmpty: {
+            //       message: 'Manager is required.'
+            //     }
+            //   }
+            // },
+            vendor: {
+              validators: {
+                notEmpty: {
+                  message: 'Vendor Type is required.'
+                }
+              }
+            },
+            scat: {
+              validators: {
+                notEmpty: {
+                  message: 'School Category is required.'
+                }
+              }
+            },
+            school: {
+              validators: {
+                notEmpty: {
+                  message: 'School/Seller is required.'
+                }
+              }
+            },
+            address: {
+              validators: {
+                notEmpty: {
+                  message: 'Address is required.'
+                }
+              }
+            },
+            state: {
+              validators: {
+                notEmpty: {
+                  message: 'State is required.'
+                }
+              }
+            },
+            city: {
+              validators: {
+                notEmpty: {
+                  message: 'City is required.'
+                }
+              }
+            }
+          },
+          plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap5: new FormValidation.plugins.Bootstrap5({
+              eleValidClass: '',
+              rowSelector: '.row'
+            }),
+            submitButton: new FormValidation.plugins.SubmitButton(),
+            autoFocus: new FormValidation.plugins.AutoFocus()
+          },
+          init: instance => {
+            instance.on('plugins.message.placed', function (e) {
+              if (e.element.parentElement.classList.contains('input-group')) {
+                e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+              }
+            });
+          }
+        });
+        //console.log(fv);
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        document.getElementById('btn-submit').addEventListener('click', function () {
+            //console.log(fv);
+            var btn = $(this);
+            fv.validate().then(function (status) {
+
+                if (status !== 'Valid') {
+
+                  // If valid, you can manually submit the form here
+                  return;
+                }
+                else{
+
+
+                    $(".offcanvas-body").block({
+                        message: '<div class="spinner-border text-primary" role="status"></div>',
+
+                        css: {
+                            border: 'none',
+                            backgroundColor: 'transparent'
+                        },
+
+                        overlayCSS: {
+                            backgroundColor: '#fff',
+                            opacity: 0.8
+
+                        }
+                    });
+
+                    btn.prop('disabled', true);
+
+                    //console.log($('.dt-state').val());
+
+                    //return;
+                    var obj = new Object();
+                    obj.flag = $("#dt-flag").val();
+                   // obj.flag == 'C' ? obj.SchoolCode= 'new' :  obj.SchoolCode = $('#dt-scode').val() ;
+                    if(obj.flag == 'C')
+                    {
+                         obj.SchoolCode= 'new'
+                    }
+                    else{
+                        obj.SchoolCode = $('#dt-scode').val();
+                    }
+
+                    obj.empid= $('.dt-empid').val();
+                    obj.ename= $('.dt-empname').val();
+                    obj.incharge= $('.dt-empdep').val();
+                    obj.AccountManager= $('.dt-empman').val();
+                    obj.VendorType= $('.dt-vendor').val();
+                    obj.SchoolCategory= $('.dt-scat').val();
+                    obj.SchoolName= $('.dt-school').val();
+                    obj.saddress= $('.dt-address').val();
+                    obj.state= $('.dt-state').val();
+                    obj.city= $('.dt-city').val();
+                        $.post({
+                            url: '/User/AddUpdateDeleteSchool',
+                            data: { sr1: obj },
+                            success: function (resp) {
+                                 btn.prop('disabled', false);
+                                   $(".offcanvas-body").unblock();
+                                 if (resp.code > 0)
+                                 {
+                                     $('#add-new-record').offcanvas('toggle');
+                                     school_table.ajax.reload(null, false);
+                                     ToastWrapper.success(resp.message);
+                                 }else{
+                                     ToastWrapper.error(`Something went wrong!`);
+                                 }
+
+                            },
+                            error: function (xhr, status, error) {
+                                  btn.prop('disabled', false);
+                                 $(".offcanvas-body").unblock();
+
+                                 ToastWrapper.error(`Something went wrong!`);
+                            }
+                        });
+
+
+                }
+            });
+
+        });
+    })
+</script>
+<script>
+    function deleteRecord () {
+        $('.datatables-schools').on('click', '.delete-record', function() {
+
+            var btn = $(this);
+            var row = $(this).closest('tr');
+            Swal.fire({
+                text: 'Are you sure you would like to delete this item?',
+
+                icon: 'warning',
+
+                showCancelButton: true,
+
+                confirmButtonText: 'Yes',
+
+                customClass: {
+
+                    confirmButton: 'btn btn-primary me-2 waves-effect waves-light',
+
+                    cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+
+                },
+
+                buttonsStyling: false
+
+            }).then(function (result) {
+
+                if (result.value) {
+                    btn.prop('disabled', true);
+
+
+
+                    var id1 = school_table.row(row).data();
+                   // console.log(id1['zoneid']);
+                    //var id = row.find('td:eq(0)').text();
+                    //var quantity = row.find('td').eq(5).find('input').val();
+                   // console.log();
+                    //return;
+                   var obj = new Object();
+                   obj.flag = 'D';
+                   obj.SchoolCode= id1['school_code'];
+                   // var cityInfo = {
+                   //              flag: "D",
+                   //              cityid: id1['cityid'],
+
+                   //          };
+                   $.post({
+                       url: '@Url.Action("AddUpdateDeleteSchool", "User")',
+                       data: { sr1 : obj },
+                       success: function (resp) {
+                           btn.prop('disabled', false);
+                           if (resp.code )
+                          {
+                               school_table.row(btn.parents('tr')).remove().draw();
+                               ToastWrapper.success(`School deleted successfully!`);
+                          }else{
+                               ToastWrapper.error(resp.message);
+                          }
+
+
+                       },
+                       error: function (xhr, status, error) {
+                           btn.prop('disabled', false);
+                           ToastWrapper.error(xhr.responseText);
+                       }
+                   });
+                }
+                else{
+                }
+            });
+       });
+    }
+
+
+
+    function editRecord(){
+        $('.datatables-schools').on('click', '.edit-record', function() {
+            fv.resetForm(true);
+
+            var btn = $(this);
+            var row = $(this).closest('tr');
+
+            var rowData = school_table.row(row).data();
+            console.log(rowData);
+            console.log(rowData.school_code);
+            if (row) {
+                $("#dt-flag").val("U");
+                $("#dt-scode").val(rowData.school_code);
+                $('.dt-empid').val(rowData.empid);
+                $('.dt-empname').val(rowData.ename);
+                $('.dt-empdep').val(rowData.department);   // department not found
+                $('.dt-role').val(rowData.role);
+                $('.dt-empman').val(rowData.account_manager ?? "123");   // (remove 123 before - debug purpose)
+                $('.dt-school').val(rowData.school_name);
+                $('.dt-address').val(rowData.saddress);
+                $('.dt-state').val(rowData.statecode).trigger('change');
+                $('.dt-city').val(rowData.citycode).trigger('change');
+                $('.dt-vendor').val(rowData.vendor_type).trigger('change');
+                $('.dt-scat').val(rowData.school_category).trigger('change');
+            }
+
+           $(".offcanvas-title").text("Edit School");
+           $('#add-new-record').offcanvas('toggle');
+        });
+
+        $('.add-new').on('click', function () {
+            $(".offcanvas-title").text('Add School');
+
+             $("#dt-flag").val("C");
+            fv.resetForm(true);
+            $('#form-add-new-record select').val('').trigger('change');
+
+             user.forEach(function (item) {
+                $('.dt-empid').val(item.EMPID);
+                $('.dt-role').val(item.USER_ROLE_ID);
+                $('.dt-empname').val(item.ENAME);
+                $('.dt-empdep').val(item.DEPARTMENT);
+                $('.dt-empman').val(item.ACCOUNT_MANAGER);
+            });
+        });
+    }
+
+
+
+</script>

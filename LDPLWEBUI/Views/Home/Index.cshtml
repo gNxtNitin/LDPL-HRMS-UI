@@ -1,0 +1,133 @@
+﻿@{
+	Layout = "_LandingPageLayout";
+	ViewData["Title"] = "Home Page";
+}
+@* <div data-bs-spy="scroll" class="scrollspy-example">
+	<!-- Hero: Start -->
+	<section id="hero-animation">
+		<div id="landingHero" class="section-py landing-hero position-relative">
+			<img src="~/app-assets/img/front-pages/backgrounds/hero-bg.png"
+				 alt="hero background"
+				 class="position-absolute top-0 start-50 translate-middle-x object-fit-cover w-100 h-100"
+				 data-speed="1" />
+			<div class="container">
+				<div class="row">
+				<div class="hero-text-box text-center position-relative col-6">
+						<h1 class="text-primary hero-title display-6 fw-extrabold">
+							One dashboard to manage all Customer Portal
+						</h1>
+						<h2 class="hero-sub-title h6 mb-6">
+							Production-ready & easy to use Customer Portal<br class="d-none d-lg-block" />
+							for Managing Orders.
+						</h2>
+						<div class="landing-hero-btn d-inline-block position-relative">
+							
+							<a href="/Auth/Login" class="btn btn-primary btn-lg">Login to Customer Portal</a>
+						</div>
+					</div>
+					<div class="hero-text-box text-center position-relative col-6">
+						<h1 class="text-primary hero-title display-6 fw-extrabold">
+							One dashboard to manage all your Admin Portal
+						</h1>
+						<h2 class="hero-sub-title h6 mb-6">
+							Production-ready & easy to use Admin Template<br class="d-none d-lg-block" />
+							for Reliability and Customizability.
+						</h2>
+						<div class="landing-hero-btn d-inline-block position-relative">
+							
+							<a href="/Auth/LoginAdmin" class="btn btn-primary btn-lg">Login to Admin Portal</a>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="landing-hero-blank"></div>
+	</section>
+</div>
+ *@
+
+
+
+
+<div data-bs-spy="scroll" class="scrollspy-example">
+
+   @*  <!-- Top Bar -->
+    <div class="w-100 py-2 bg-navbar-theme text-white text-center position-fixed top-0 start-0 z-3">
+        <strong>Unified Dashboard Access</strong>
+    </div> *@
+
+    <!-- Top Bar -->
+    <div class="w-100 bg-navbar-theme text-white position-fixed top-0 start-0 z-3 py-1 px-2">
+        <div class="d-flex align-items-center justify-content-center">
+            <!-- Logo (Left) -->
+            <div class="">
+                <img src="~/static/logo3.png" alt="Logo" class="" style="height: 40px;">
+            </div>
+
+            <!-- Centered Text (Overlayed Absolute Center) -->
+            <div class="text-center">
+                <strong>LDPL WEB PORTAL</strong>
+            </div>
+
+            <!-- Right Spacer (for symmetry) -->
+            <div style="width: 40px;"></div>
+        </div>
+    </div>
+
+
+    <!-- Hero: Start -->
+    <section id="hero-animation" class="min-vh-100 d-flex flex-column justify-content-center">
+        <div id="landingHero" class="section-py landing-hero position-relative flex-grow-1 d-flex align-items-center">
+            <!-- Background Image -->
+            <img src="~/app-assets/img/front-pages/backgrounds/hero-bg.png"
+                 alt="hero background"
+                 class="position-absolute top-0 start-50 translate-middle-x object-fit-cover w-100 h-100"
+                 data-speed="1" />
+
+            <div class="container position-relative z-2 mt-5 mb-5">
+                <div class="row g-4 justify-content-center align-items-center">
+
+                    <!-- Customer Portal -->
+                    <div class="hero-text-box text-center col-12 col-lg-6">
+                        <div>
+                            <h1 class="text-primary hero-title display-6 fw-extrabold">
+                               Customer Web Order Portal
+                            </h1>
+                            <h2 class="hero-sub-title h6 mb-4">
+                               @*  Production-ready & easy to use Customer Portal<br class="d-none d-lg-block" />
+                                for Managing Orders. *@
+                            </h2>
+                            <div class="landing-hero-btn d-inline-block">
+                                <a href="/Auth/Login" class="btn btn-primary btn-lg">Login to Customer Portal</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Portal -->
+                    <div class="hero-text-box text-center col-12 col-lg-6">
+                        <div>
+                            <h1 class="text-primary hero-title display-6 fw-extrabold">
+                                Mobile Admin Portal
+                            </h1>
+                            <h2 class="hero-sub-title h6 mb-4">
+                                @* Production-ready & easy to use Admin Template<br class="d-none d-lg-block" />
+                                for Reliability and Customizability. *@
+                            </h2>
+                            <div class="landing-hero-btn d-inline-block">
+                                <a href="/Auth/LoginAdmin" class="btn btn-primary btn-lg">Login to Admin Portal</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="w-100 py-2 bg-navbar-theme text-white text-center position-fixed bottom-0 start-0 z-3">
+            <small>© 2025 LDPL. All rights reserved.</small>
+        </div>
+    </section>
+</div>
+

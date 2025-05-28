@@ -1,0 +1,558 @@
+﻿@{
+    Layout = "_DashboardLayout";
+    ViewBag.Title = "Orders Dashboard";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/apex-charts/apex-charts.css" />
+
+    <style>
+                .metric-card .info-label {
+                    font-size: 0.8rem; /* was 0.7rem */
+                    color: #495057;
+                }
+
+                .metric-card .info-value {
+                    font-size: 1.15rem; /* was 0.95rem */
+                    font-weight: 600;
+                }
+
+                .metric-card {
+                    border: none;
+                    border-radius: 0.75rem;
+                    overflow: hidden;
+                    transition: transform 0.2s ease-in-out;
+                }
+
+                    .metric-card:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+                    }
+        
+                .metric-gradient-total {
+                    background: linear-gradient(to right, #f3f9ff, #e1efff, #c6e2ff);
+                }
+
+                .metric-gradient-pending {
+                    background: linear-gradient(to right, #fff9e6, #ffe0b3, #ffdb80);
+                }
+
+                .metric-gradient-approved {
+                    background: linear-gradient(to right, #e6f9ff, #b3eaff, #80d3ff);
+                }
+
+                .metric-gradient-executed {
+                    background: linear-gradient(to right, #e6f9e6, #b3f2b3, #80ec80);
+                }
+        
+
+                .container-p-y:not([class^=pt-]):not([class*=" pt-"]) {
+                    padding-top: 0 !important;
+                }
+
+
+        .placeholder-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 220px;
+            background: #f9f9f9;
+            border: 1px dashed #e0e0e0;
+            position: relative;
+        }
+
+        .apex-placeholder {
+            text-align: center;
+            color: #bbb;
+        }
+
+        .scroll-fade-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px; /* Or whatever fits your layout */
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .scroll-fade-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll-short 8s linear infinite;
+            padding-left: 100%;
+            font-size: 1rem;
+        }
+
+        @@keyframes scroll-short {
+            0%
+
+        {
+            transform: translateX(10%);
+        }
+
+        100% {
+            transform: translateX(-100%);
+        }
+
+        }
+
+        /* Fade effect */
+        .scroll-fade-container::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 50px;
+            height: 100%;
+            pointer-events: none;
+        }
+
+
+    </style>
+
+}
+
+
+@section PageScripts {
+    <script src="~/app-assets/vendor/libs/apex-charts/apexcharts.js"></script>
+    <script src="~/js/customer-dashbaord.js"></script>
+}
+
+<div class="card mb-4 mt-3">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="m-0 overview-title1">Orders Overview - This Week</h5> 
+            <small class="text-muted text-dataupdate-time" style="font-size: 0.75rem;"></small>
+            <select id="intervalSelector" class="form-select form-select-sm w-auto">
+                <option value="W" selected>This Week</option>
+                <option value="M">This Month</option>
+            </select>
+        </div>
+
+        <div class="row g-3">
+           @*  <!-- SMALL CARD FOR COUNT ONLY -->
+            <div class="col-lg-2 col-md-3 col-sm-4 col-12">
+                <div class="card metric-card p-3">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip" title="Total orders created in the selected time period">
+                            <i class="fa-solid fa-box text-success me-1" style="font-size: 1rem;"></i>
+                            <span class="info-value" id="count-total-orders-small">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div> *@
+
+            <!-- TOTAL ORDERS -->
+            <div class="col-lg-3 col-md-3 col-sm-4 col-12">
+                <div class="card metric-card metric-gradient-total p-3">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip" title="Total orders created in the selected time period">
+                            <i class="fa-solid fa-box text-success me-1" style="font-size: 1rem;"></i>
+                            <span class="info-value" id="count-total-orders">0</span>
+                        </div>
+                        <div id="chart-total-orders" class="metric-chart mb-2"></div>
+                        <div class="info-label">Total Orders Created</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PENDING ORDERS -->
+            <div class="col-lg-3 col-md-3 col-sm-4 col-12">
+                <div class="card metric-card metric-gradient-pending p-3">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip" title="Orders with at least one item in pending status">
+                            <i class="fa-solid fa-hourglass-half text-danger me-1" style="font-size: 0.8rem;"></i>
+                            <span class="info-value" id="count-pending-orders">0</span>
+                        </div>
+                        <div id="chart-pending-orders" class="metric-chart mb-2"></div>
+                        <div class="info-label">Orders with Pending Items</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APPROVED ORDERS -->
+            <div class="col-lg-3 col-md-3 col-sm-4 col-12">
+                <div class="card metric-card metric-gradient-approved p-3">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip" title="Orders where all items are approved">
+                            <i class="fa-solid fa-thumbs-up text-primary me-1" style="font-size: 0.8rem;"></i>
+                            <span class="info-value" id="count-approved-orders">0</span>
+                        </div>
+                        <div id="chart-approved-orders" class="metric-chart mb-2"></div>
+                        <div class="info-label">Orders with All Items Approved</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXECUTED ORDERS -->
+            <div class="col-lg-3 col-md-3 col-sm-4 col-12">
+                <div class="card metric-card metric-gradient-executed p-3">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip" title="Orders where all items are executed">
+                            <i class="fa-solid fa-circle-check text-success me-1" style="font-size: 0.8rem;"></i>
+                            <span class="info-value" id="count-executed-orders">0</span>
+                        </div>
+                        <div id="chart-executed-orders" class="metric-chart mb-2"></div>
+                        <div class="info-label">Orders with All Items Executed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row g-3 mt-2">
+            <div class="col-lg-12 col-sm-12">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div id="chart-orders-simple" class="mb-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="m-0">Last 6 Months Overview</h5>
+        </div>
+
+        <div class="row g-4 mb-2">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div id="chart-pastmonths-orders" class="mb-2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div id="chart-top-items" class="mb-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* <script>
+    const sparkOptions = (data, color, categories) => ({
+        chart: {
+            type: 'line',
+            height: 50,
+            sparkline: { enabled: true }
+        },
+        series: [{ data }],
+        stroke: { width: 2 },
+        colors: [color],
+        tooltip: {
+            enabled: true,
+            x: { format: 'dd MMM' },
+            y: { formatter: val => `${val} orders` }
+        },
+        xaxis: { categories }
+    });
+
+    const stackedBarOptions = (labels, pendingData, approvedData, executedData) => ({
+        chart: {
+            type: 'bar',
+            height: 300,
+            stacked: true,
+            toolbar: { show: false },
+            // No change for default responsive settings
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false // Default to vertical bars
+            }
+        },
+        xaxis: {
+            categories: labels,
+            labels: { rotate: -45 }
+        },
+        yaxis: {
+            title: { text: 'Order Count' }
+        },
+        legend: {
+            position: 'top'
+        },
+        tooltip: {
+            y: {
+                formatter: val => `${val} orders`
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        colors: ['#fbbf24', '#38bdf8', '#4ade80'],
+        series: [
+            { name: 'Pending', data: pendingData },
+            { name: 'Approved', data: approvedData },
+            { name: 'Executed', data: executedData }
+        ],
+        responsive: [
+            {
+                breakpoint: 768, // When screen width is less than 768px
+                options: {
+                    chart: {
+                        height: 500, // Adjust height if needed
+                    },
+                    plotOptions: {
+                        bar: {
+                            horizontal: true // Switch to horizontal bars for mobile
+                        }
+                    },
+                    xaxis: {
+                        categories: labels, // Ensure categories are visible even on smaller screens
+                        labels: { rotate: 0 } // No label rotation for better readability on small screens
+                    },
+                    yaxis: {
+                        title: { text: 'Order Count' }, // Keep axis title consistent
+                    },
+                    tooltip: {
+                        y: {
+                            formatter: val => `${val} orders`
+                        }
+                    }
+                }
+            }
+        ]
+        // zoom: {
+        //   enabled: true,
+        //   type: 'x',
+        //   autoScaleYaxis: true
+        // },
+        // toolbar: {
+        //   show: true,
+        //   tools: {
+        //     zoom: true,
+        //     zoomin: true,
+        //     zoomout: true,
+        //     pan: true,
+        //     reset: true
+        //   }
+        //}
+    });
+
+
+
+
+    const generateLabels = (interval) => {
+        const labels = [];
+        const now = new Date();
+       if (interval === 'week') {
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const today = now.getDay();
+            for (let i = 6; i >= 0; i--) {
+                const day = new Date(now);
+                day.setDate(now.getDate() - i);
+                labels.push(days[day.getDay()]);
+            }
+        } else {
+            for (let i = 29; i >= 0; i--) {
+                const day = new Date(now);
+                day.setDate(now.getDate() - i);
+                labels.push(`${day.getDate()} ${day.toLocaleString('default', { month: 'short' })}`);
+            }
+        }
+        return labels;
+    };
+
+    const generateData = (length, min, max) => {
+        return Array.from({ length }, () => Math.floor(Math.random() * (max - min + 1)) + min);
+    };
+
+    let charts = {};
+
+    function renderCharts(interval) {
+        const labels = generateLabels(interval);
+
+        const totalData = generateData(labels.length, 40, 100);
+        const pendingData = generateData(labels.length, 30, 80);
+        const approvedData = generateData(labels.length, 10, 70);
+        const executedData = generateData(labels.length, 10, 50);
+
+        // Update counts
+        document.getElementById('count-total-orders').textContent = totalData.reduce((a, b) => a + b, 0);
+        document.getElementById('count-pending-orders').textContent = pendingData.reduce((a, b) => a + b, 0);
+        document.getElementById('count-approved-orders').textContent = approvedData.reduce((a, b) => a + b, 0);
+        document.getElementById('count-executed-orders').textContent = executedData.reduce((a, b) => a + b, 0);
+
+        const options = {
+            total: sparkOptions(totalData, '#3b82f6', labels),
+            pending: sparkOptions(pendingData, '#f97316', labels),
+            approved: sparkOptions(approvedData, '#06b6d4', labels),
+            executed: sparkOptions(executedData, '#22c55e', labels),
+            stacked: stackedBarOptions(labels, pendingData, approvedData, executedData)
+        };
+
+        // Destroy previous charts
+        for (const key in charts) {
+            if (charts[key]) charts[key].destroy();
+        }
+
+        charts.total = new ApexCharts(document.querySelector("#chart-total-orders"), options.total);
+        charts.pending = new ApexCharts(document.querySelector("#chart-pending-orders"), options.pending);
+        charts.approved = new ApexCharts(document.querySelector("#chart-approved-orders"), options.approved);
+        charts.executed = new ApexCharts(document.querySelector("#chart-executed-orders"), options.executed);
+        charts.stacked = new ApexCharts(document.querySelector("#chart-orders-simple"), options.stacked);
+
+        charts.total.render();
+        charts.pending.render();
+        charts.approved.render();
+        charts.executed.render();
+        charts.stacked.render();
+    }
+
+    document.getElementById("intervalSelector").addEventListener("change", e => {
+        renderCharts(e.target.value);
+    });
+
+    $(document).ready(()=>{
+        renderCharts("month");
+        generateCharts2();
+        generateCharts3();
+    });
+
+    function generateCharts2(){
+        const generateLast6MonthsLabels = () => {
+            const labels = [];
+            const now = new Date();
+
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                labels.push(d.toLocaleString('default', { month: 'short', year: '2-digit' }));
+            }
+            return labels;
+        };
+
+        const generateMonthlyOrderData = (months) => {
+            return {
+                pending: generateData(months.length, 100, 300),
+                approved: generateData(months.length, 150, 400),
+                executed: generateData(months.length, 200, 500)
+            };
+        };
+
+
+        const months = generateLast6MonthsLabels();
+        const data = generateMonthlyOrderData(months);
+
+        const chart = new ApexCharts(document.querySelector("#chart-pastmonths-orders"), {
+            chart: {
+                type: 'bar',
+                height: 300,
+                stacked: true,
+                toolbar: { show: false }
+            },
+            title: {
+                text: 'Ordered Items in Last 6 Months',
+                align: 'center',
+                style: {
+                    //fontSize: '16px',
+                    //fontWeight: 'bold',
+                    //color: '#333'
+                }
+            },
+            plotOptions: {
+                bar: {
+                    columnWidth: '50%'
+                }
+            },
+            xaxis: {
+                categories: months,
+                title:{text: 'Month'}
+            },
+            yaxis: {
+                title: { text: 'Orders' }
+            },
+            legend: { position: 'top' },
+            colors: ['#fbbf24', '#38bdf8', '#4ade80'],
+            series: [
+                { name: 'Pending', data: data.pending },
+                { name: 'Approved', data: data.approved },
+                { name: 'Executed', data: data.executed }
+            ],
+            responsive: [
+                {
+                    breakpoint: 768, // When screen width is less than 768px
+                    options: {
+                        chart: {
+                            height: 400, // Adjust height if needed
+                        },
+                        plotOptions: {
+                            bar: {
+                                horizontal: true // Switch to horizontal bars for mobile
+                            }
+                        },
+                        xaxis: {
+                            categories: months, // Ensure categories are visible even on smaller screens
+                            labels: { rotate: 0 } // No label rotation for better readability on small screens
+                        },
+                        yaxis: {
+                            title: { text: 'Order Count' }, // Keep axis title consistent
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: val => `${val} orders`
+                            }
+                        }
+                    }
+                }
+            ]
+        });
+        chart.render();
+    }
+
+    function generateCharts3(range = 'week')
+    {
+
+        const getTopItemsData = (range = 'week', topN = 10) => {
+        const products = ['Apple', 'Banana', 'Chair', 'Desk', 'Monitor', 'Pen', 'Notebook', 'Shoes', 'Watch', 'Bag'];
+        const data = products.map(p => ({
+            name: p,
+            orders: Math.floor(Math.random() * (range === 'week' ? 50 : 200)) + 10
+        }));
+
+        data.sort((a, b) => b.orders - a.orders);
+
+        const top = data.slice(0, topN);
+            return {
+                labels: top.map(d => d.name),
+                values: top.map(d => d.orders)
+            };
+        };
+
+        const { labels, values } = getTopItemsData(range);
+
+        const chartTopItems = new ApexCharts(document.querySelector("#chart-top-items"), {
+            chart: {
+                type: 'bar',
+                height: 300
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    barHeight: '60%'
+                }
+            },
+            xaxis: {
+                categories: labels
+            },
+            colors: ['#22c55e'],
+            series: [
+                {
+                    name: 'Orders',
+                    data: values
+                }
+            ],
+            tooltip: {
+                y: { formatter: val => `${val} orders` }
+            }
+        });
+
+        chartTopItems.render();
+    }
+
+</script> *@

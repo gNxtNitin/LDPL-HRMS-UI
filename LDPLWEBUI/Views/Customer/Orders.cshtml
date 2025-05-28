@@ -1,0 +1,126 @@
+﻿@{
+    Layout = "_DashboardLayout";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+}
+
+
+@section PageScripts
+{
+
+    <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/js/OrderMaster.js"></script>
+   @*  <script src="~/js/InvoiceTable.js"></script> *@
+    @* <script src="~/app-assets/js/app-user-list.js"></script> *@
+}
+<style>
+    html:not([dir=rtl]) .modal .btn-close {
+        transform: translate(0px, 0px)!important;
+    }
+    .modal-body{
+        padding: 0!important;
+    }
+
+    .modal-simple .modal-content {
+        padding: 1rem;
+    }
+</style>
+
+<div class="modal fade" id="shareProject" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-simple modal-enable-otp modal-share-project modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center">
+                    <h4 class="mb-2">Invoices </h4>
+                   @*  <p>Share project with a team member</p> *@
+                </div>
+            </div>
+            <div class="card-datatable table-responsive">
+                <table class="datatables-invoice table table-hover dt-table-striped">
+                    <thead class="border-top bg-menu-theme text-white fw-2">
+                        <tr>
+
+                            <th>Invoice Number</th>
+                            <th>Invoice Date</th>
+                            <th>Invoice Amount</th>
+                            <th>Order Number</th>
+                            <th>Dispatch Number</th>
+                            
+                            <th>Actions</th>
+
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Users List Table -->
+<div class="card">
+    <div class="card-datatable table-responsive">
+        <table class="datatables-orders table table-hover dt-table-striped">
+            <thead class="border-top bg-menu-theme text-white fw-2">
+                <tr>
+
+                    <th>Order Number</th>
+                    <th>Order Date</th>
+                    <th>Total Items</th>
+                    <th>Pending Items</th>
+                    <th>Approved Items</th>
+                    <th>Executed Items</th>
+                    <th>Total Amount</th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<button type="button" class=" modal-weigh" style="display:none;" data-bs-toggle="modal" data-bs-target="#shareProject">
+    Show
+</button>
+<script>
+    $(document).ready(function () {
+        var a = @Html.Raw(Json.Serialize(ViewBag.ErCode));
+        var b = @Html.Raw(Json.Serialize(ViewBag.ErMsg));
+       
+        if (a != null) {
+             a == "1" ?  ToastWrapper.success(b): ToastWrapper.error(b) ;
+             a = null;
+        }
+
+    //     $('.modal-weigh').on('click', function () {
+    //         alert(1);
+    //     });
+     })
+</script>
+
+<script>
+    function invoiceRecord () {
+        $('.invoice-btn').on('click', function() {
+              if (typeof user_table2 !== 'undefined' && $.fn.DataTable.isDataTable('.datatables-invoice')) {
+                  user_table2.destroy();
+              }
+              
+              //
+              var btn = $(this);
+              var itemList = [];
+              var row = $(this).closest('tr');
+
+
+              var id = row.find('td:eq(0)').text();
+              invoiceInit(id);
+              //var quantity = row.find('td').eq(3).find('input').val();
+              
+              //btn.prop('disabled', true);
+
+               
+        });
+    }
+</script>

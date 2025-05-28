@@ -1,0 +1,136 @@
+﻿@{
+    Layout = "_DashboardLayout";
+    ViewBag.Title = "My DA Report";
+}
+
+
+@section PageStyles {
+        <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+        <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+        <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+        <link href="~/app-assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/css/site.css" />
+
+      <style>
+            .viewer-container {
+                width: 100%;
+                height: 80vh;
+                background: #f8f9fa;
+                overflow: hidden;
+                position: relative;
+            }
+
+            .pdf-container iframe {
+                height: 100%;
+                width: 100%;
+                border: none;
+            }
+
+            .panzoom-container img {
+                max-height: 100%;
+                max-width: 100%;
+                display: block;
+                margin: auto;
+            }
+
+
+            .viewer-image {
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
+                display: block;
+                margin: 0 auto;
+                object-fit: contain;
+            }
+
+
+
+            .carousel-control-prev,
+            .carousel-control-next {
+                z-index: 5;
+                filter: drop-shadow(0 0 4px black);
+                opacity: 1 !important;
+            }
+
+            .custom-checkbox {
+                border: 2px solid #fff;
+            }
+
+            .custom-checkbox:checked {
+                filter: invert(1);
+            }
+
+      </style>
+
+}
+
+
+@section PageScripts
+{
+        <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+        <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
+         <script src="https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.min.js"></script>
+        <script src="~/js/reports/mydareportdatatable.js"></script>
+
+}
+
+
+
+
+<div class="card">
+
+    <div class="card-datatable table-responsive">
+        <table class="datatables-dareport table table-hover dt-table-striped">
+            <thead class="border-top bg-menu-theme text-white fw-2">
+                <tr>
+                    <th>DA DATE</th>
+                    <th>EMP ID</th>
+                    <th>EMP NAME</th>
+                    <th>DA</th>
+                    <th>HOTEL</th>
+                    <th>OTHERS</th>
+                    <th>KM</th>
+                    <th>DA STATUS</th>
+                    <th>FROM DATE</th>
+                    <th>TO DATE</th>
+                    <th>BILLS</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Bills Viewer Modal -->
+<div class="modal fade" id="imageViewerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-fullscreen-sm-down">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center">
+                <h5 class="modal-title">Bills</h5>
+                <a id="downloadLink" class="btn btn-sm btn-outline-primary ms-auto" href="#" download>
+                    <i class="ti ti-download" title="Download File"></i>
+                </a>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div id="billCarousel" class="carousel slide" data-bs-interval="false" data-ride="carousel" data-pause="hover">
+                    <div class="carousel-indicators" id="carouselIndicators"></div>
+                    <div class="carousel-inner" id="carouselItems"></div>
+                    <button class="carousel-control-prev always-visible-nav" type="button" data-bs-target="#billCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next always-visible-nav" type="button" data-bs-target="#billCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

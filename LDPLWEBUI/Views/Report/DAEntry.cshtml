@@ -1,0 +1,385 @@
+﻿@model UploadDAViewModel
+
+@{
+    Layout = "_DashboardLayout";
+    ViewBag.Title = "DA Entry";
+}
+
+@section PageStyles {
+    <style>
+        input:disabled {
+            font-weight: 600;
+            color: #000;
+            background-color: #f5f5f5;
+            opacity: 1;
+        }
+
+        .form-label.required::after {
+            content: " *";
+            color: red;
+        }
+
+        .feedback-wrapper {
+            min-height: 1em; 
+        }
+
+        
+    </style>
+    
+}
+
+@section PageScripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-center align-items-center">
+        <h5 class="card-title mb-0 p-2">DA Entry</h5>
+        @* <small class="text-muted">Updated 1 month ago</small> *@
+    </div>
+    <div class="card-body">
+
+
+        <form asp-action="DAEntry" asp-controller="Reports" method="post" enctype="multipart/form-data" id="uploadDAForm">
+            <div class="container">
+                <div class="row g-4 mb-4">
+                    <!-- Read-only fields -->
+                    <div class="col-md-3">
+                        <label asp-for="EmpId" class="form-label"></label>
+                        <input asp-for="EmpId" class="form-control" disabled />
+                        <span asp-validation-for="EmpId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="EmployeeName" class="form-label"></label>
+                        <input asp-for="EmployeeName" class="form-control" disabled />
+                        <span asp-validation-for="EmployeeName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Department" class="form-label"></label>
+                        <input asp-for="Department" class="form-control" disabled />
+                        <span asp-validation-for="Department" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Manager" class="form-label"></label>
+                        <input asp-for="Manager" class="form-control" disabled />
+                        <span asp-validation-for="Manager" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <label asp-for="Role" class="form-label"></label>
+                        <input asp-for="Role" class="form-control" disabled />
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="KM" class="form-label"></label>
+                        <input asp-for="KM" class="form-control numeric-input" disabled/>
+                        <span asp-validation-for="KM" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="DA" class="form-label required"></label>
+                        <input asp-for="DA" class="form-control numeric-input" />
+                        <span asp-validation-for="DA" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Hotel" class="form-label"></label>
+                        <input asp-for="Hotel" class="form-control numeric-input" />
+                        <span asp-validation-for="Hotel" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <label asp-for="Other" class="form-label"></label>
+                        <input asp-for="Other" class="form-control numeric-input" />
+                        <span asp-validation-for="Other" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="FromDate" class="form-label required"></label>
+                        <input asp-for="FromDate" class="form-control dt-input" type="date" />
+                        <span asp-validation-for="FromDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="ToDate" class="form-label required"></label>
+                        <input asp-for="ToDate" class="form-control dt-input" type="date" />
+                        <span asp-validation-for="ToDate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-start align-items-center mb-3">
+                    <button id="addBillBtn" type="button" class="btn btn-outline-primary d-flex align-items-center gap-1">
+                        <i class="ti ti-file-plus"></i> Add Bill
+                    </button>
+                </div>
+
+                <div id="billsContainer" class="row gy-3">
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-success px-4 btn-submit">Submit</button>
+                    <button type="button" class="btn btn-danger btn-cancel">Cancel</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+
+</div>
+
+
+
+<script>
+        $(document).ready(function () {
+            
+            $('.numeric-input:not(:disabled)').val('');
+
+            $(".btn-cancel").on("click", ()=>{
+                  $('input:not(:disabled)').val('');
+                  $('.bill-entry').remove();
+            });
+
+            $('#addBillBtn').on('click', function () {
+               
+                const billHtml = `
+                  <div class="row bill-entry align-items-end mb-2">
+                        <div class="col-md-4">
+                          <label class="form-label required">Bill File</label>
+                          <input type="file" class="form-control bill-file" name="Bills" accept="image/*,.pdf" required />
+                          <div class="feedback-wrapper">
+                            <small class="invalid-msg text-danger d-none">Only image and PDF files are allowed.</small>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label required">Description</label>
+                          <input type="text" class="form-control bill-desc" name="Descriptions" placeholder="Remarks" required />
+                          <div class="feedback-wrapper">
+                            <small class="invalid-msg text-danger d-none">&nbsp;</small>
+                          </div>
+                        </div>
+                    <div class="col-md-2 m-2">
+                      <button type="button" class="btn btn-outline-danger remove-bill" title="Remove">
+                        <i class="ti ti-trash"></i>
+                      </button>
+                    </div>
+                  </div>`;
+                $('#billsContainer').append(billHtml);
+            });
+
+            $('#billsContainer').on('click', '.remove-bill', function () {
+                $(this).closest('.bill-entry').remove();
+            });
+
+            
+            $("#billsContainer").on('change', '.bill-file', function () {
+                const file = this.files[0];
+                const $input = $(this);
+                const $feedback = $input.closest('.col-md-4').find('.invalid-msg');
+
+                if (file) {
+                    const validTypes = ['image/jpeg','image/jpg', 'image/png', 'application/pdf'];
+
+                    if (!validTypes.includes(file.type)) {
+                        $feedback.removeClass('d-none');         
+                        $input.addClass('is-invalid');           
+                    } else {
+                        $feedback.addClass('d-none');           
+                        $input.removeClass('is-invalid');       
+                    }
+                }
+            });
+
+
+
+            $('#uploadDAForm').on('submit', function (e) {
+                e.preventDefault();
+
+                const $form = $("#uploadDAForm");
+                
+
+                const fromDateRaw = $('#FromDate').val();
+                const toDateRaw = $('#ToDate').val();
+             
+                if(fromDateRaw.trim() == "" || toDateRaw.trim() == ""){
+                    return;
+                }
+
+                const dtRangeFrom = formatDateToISO(fromDateRaw);
+                const dtRangeTo = formatDateToISO(toDateRaw);
+                
+                const inputVal = $('#DA').val();
+
+                const parsed = parseFloat(inputVal);
+
+                if (isNaN(parsed) || parsed <= 0) {
+                    ToastWrapper.error("DA amount should be more than 0");
+                    return;
+                }
+
+                if (dtRangeFrom && dtRangeTo) {
+                    const from = new Date(dtRangeFrom);
+                    const to = new Date(dtRangeTo);
+
+                    if (from > to) {
+                        ToastWrapper.error("Invalid Date Range Entered!");
+                        return;
+                    }
+                }
+                else{
+                     ToastWrapper.error("Invalid Date Range origin Format!");
+                    return;
+                }
+
+
+                $("#billsContainer").find('.bill-entry').each(function () {
+                    const fileInput = $(this).find('.bill-file');
+                    const descInput = $(this).find('.bill-desc');
+                    
+                    if (!fileInput.val()) {
+                      fileInput.addClass('is-invalid');
+                      isValid = false;
+                      return;
+                    } else {
+                      fileInput.removeClass('is-invalid');
+                    }
+
+                    if (!descInput.val()) {
+                      descInput.addClass('is-invalid');
+                      isValid = false;
+                      return;
+                    } else {
+                      descInput.removeClass('is-invalid');
+                    }
+                });
+
+                $form.block({
+                    message: '<div class="spinner-border text-primary" role="status"></div>',
+                    css: {
+                        backgroundColor: 'transparent',
+                        border: '0'
+                    },
+                    overlayCSS: {
+                    backgroundColor: '#fff',
+                    opacity: 0.6
+                    }
+                });
+
+                const form = this;
+
+                const formData = new FormData(form);
+
+                $.ajax({
+                    url: '@Url.Action("DAEntry", "Report")',
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if(response.status>0){
+                             $('.numeric-input:not(:disabled)').val('');
+
+                             $('.bill-entry').remove();
+                             $form.unblock();
+                             ToastWrapper.success('DA Request submitted successfully.');
+
+                            
+                        }
+                        else{
+                            $form.unblock();
+                            ToastWrapper.error('Failed To Submit DA Rquest.');
+                        }
+                    },
+                    error: function (xhr) {
+                        $form.unblock();
+                        let message = "Submission failed.";
+                        if (xhr.responseText) {
+                            message += ` ${xhr.responseText}`;
+                        }
+                        ToastWrapper.error(message);
+                    }
+                });
+            });
+
+
+            
+
+             $(".dt-input").flatpickr({
+                    monthSelectorType: 'static',
+                    disableMobile: true,
+                    defaultDate: new Date(),
+                    dateFormat: 'd/m/Y'
+             });
+
+
+
+            function fetchKMIfValid() {
+                const fromDateRaw = $('#FromDate').val();
+                const toDateRaw = $('#ToDate').val();
+
+                if(fromDateRaw.trim() == "" || toDateRaw.trim() == ""){
+                    return;
+                }
+                const dtRangeFrom = formatDateToISO(fromDateRaw);
+                const dtRangeTo = formatDateToISO(toDateRaw);
+
+
+                if (dtRangeFrom && dtRangeTo) {
+                    const from = new Date(dtRangeFrom);
+                    const to = new Date(dtRangeTo);
+
+                    if (from > to) {
+                        ToastWrapper.error("From Date should not be more than To Date.");
+                        $('#KM').val(0);
+                        return;
+                    }
+
+
+                    $.ajax({
+                        url: '/Report/GetKMValue',
+                        type: 'GET',
+                        data: {
+                            fromDt:dtRangeFrom,
+                            toDt: dtRangeTo
+                        },
+                        success: function (response) {
+                            if (response.status===200) {
+                              
+                                $('#KM').val(response.data);
+                            } else {
+                                $('#KM').val(0);
+                                ToastWrapper.error(response.message || "Failed to fetch KM for the given Date Range");
+                            }
+                        },
+                        error: function () {
+                            $('#KM').val(0);
+                            ToastWrapper.error("Error fetching KM from server.");
+                        }
+                    });
+                }
+        }
+
+
+        $('#FromDate, #ToDate').on('change', fetchKMIfValid);
+
+
+        function formatDateToISO(dateStr) {
+            // Expected input: "dd/mm/yyyy"
+
+            const [day, month, year] = dateStr.split('/');
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+        }
+
+        $('.numeric-input').on('input', function () {
+            let value = $(this).val();
+            const sanitized = value
+                .replace(/[^0-9.-]/g, '')
+                .replace(/(?!^)-/g, '')
+                .replace(/(\..*?)\..*/g, '$1');
+            $(this).val(sanitized);
+        });
+
+       
+    });
+</script>

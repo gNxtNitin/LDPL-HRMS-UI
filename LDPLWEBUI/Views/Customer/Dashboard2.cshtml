@@ -1,0 +1,314 @@
+﻿@{
+    Layout = "_DashboardLayout";
+    ViewBag.title = "Dashboard";
+}
+
+@section PageStyles {
+        <link rel="stylesheet" href="~/app-assets/vendor/libs/apex-charts/apex-charts.css" />
+
+        <style>
+                    .metric-card .info-label {
+                        font-size: 0.8rem; /* was 0.7rem */
+                        color: #495057;
+                    }
+
+                    .metric-card .info-value {
+                        font-size: 1.15rem; /* was 0.95rem */
+                        font-weight: 600;
+                    }
+
+                    .metric-card {
+                        border: none;
+                        border-radius: 0.75rem;
+                        overflow: hidden;
+                        transition: transform 0.2s ease-in-out;
+                    }
+
+                        .metric-card:hover {
+                            transform: translateY(-3px);
+                            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+                        }
+
+                    .metric-gradient-total {
+                        background: linear-gradient(to right, #f3f9ff, #e1efff, #c6e2ff);
+                    }
+
+                    .metric-gradient-pending {
+                        background: linear-gradient(to right, #fff9e6, #ffe0b3, #ffdb80);
+                    }
+
+                    .metric-gradient-approved {
+                        background: linear-gradient(to right, #e6f9ff, #b3eaff, #80d3ff);
+                    }
+
+                    .metric-gradient-executed {
+                        background: linear-gradient(to right, #e6f9e6, #b3f2b3, #80ec80);
+                    }
+
+
+                    .container-p-y:not([class^=pt-]):not([class*=" pt-"]) {
+                        padding-top: 0 !important;
+                    }
+
+
+            .placeholder-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 220px;
+                background: #f9f9f9;
+                border: 1px dashed #e0e0e0;
+                position: relative;
+            }
+
+            .apex-placeholder {
+                text-align: center;
+                color: #bbb;
+            }
+            
+            .tab-content:not(.doc-example-content) {
+                padding: 0;
+            }
+        </style>
+}
+
+
+@section PageScripts {
+        <script src="~/app-assets/vendor/libs/apex-charts/apexcharts.js"></script>
+        <script src="~/js/customer-dashboard2.js"></script>
+}
+
+<div class="nav-align-top mb-6">
+  <ul class="nav nav nav-tabs nav-fill mb-4" role="tablist" id="dashbaord-charts-tab">
+    <li class="nav-item mb-1 mb-sm-0">
+      <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+        data-bs-target="#navs-justified-charts-monthweek" aria-controls="navs-justified-charts-monthweek"
+        aria-selected="true" data-tab-value="1">
+
+        <i class="tf-icons ti ti-calendar-week ti-sm me-1_5 d-none d-md-block"></i>
+        <span class="d-flex align-items-center">
+          <span class="d-none d-md-block">This Months/Weeks Orders</span>
+          <span class="d-md-none">Week/Month</span>
+        </span>
+      </button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+        data-bs-target="#navs-justified-charts-sixmonths" aria-controls="navs-justified-charts-sixmonths"
+        aria-selected="false" data-tab-value="2">
+        <i class="tf-icons ti ti-calendar-stats ti-sm me-1_5 d-none d-md-block"></i>
+        <span class="d-flex align-items-center">
+          <span class="d-none d-md-block">6-Months Overview</span>
+          <span class="d-md-none">6-Months</span>
+        </span>
+      </button>
+    </li>
+    <li class="nav-item mb-1 mb-sm-0">
+      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+        data-bs-target="#navs-justified-charts-alltime" aria-controls="navs-justified-charts-alltime"
+        aria-selected="false" data-tab-value="3">
+
+        <i class="tf-icons ti ti-history ti-sm me-1_5 d-none d-md-block"></i>
+        <span class="d-flex align-items-center">
+          <span class="d-none d-md-block">All Orders History</span>
+          <span class="d-md-none">All orders</span>
+        </span>
+      </button>
+    </li>
+  </ul>
+</div>
+<!-- CUSTOMER DAHSBAORD CONTENT -->
+
+
+<div class="tab-content">
+  <!-- Tab1 charts-->
+  <!-- Current Month/Week Orders -->
+  <div class="tab-pane fade show active" id="navs-justified-charts-monthweek" role="tabpanel">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="m-0 overview-title1">Orders Overview - This Week</h5>
+      <small class="text-muted text-dataupdate-time-t1" style="font-size: 0.75rem;"></small>
+      <select id="intervalSelector" class="form-select form-select-sm w-auto">
+        <option value="W" selected>This Week</option>
+        <option value="M">This Month</option>
+      </select>
+    </div>
+
+    <div class="row g-3">
+      <!-- TOTAL ORDERS -->
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="card metric-card metric-gradient-total p-3">
+          <div class="d-flex flex-column align-items-center justify-content-center">
+            <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip"
+              title="Total orders created in the selected time period">
+              <i class="fa-solid fa-box text-success me-1" style="font-size: 1rem;"></i>
+              <span class="info-value" id="count-total-orders-t1">0</span>
+            </div>
+            <div id="chart-total-orders-t1" class="metric-chart mb-2"></div>
+            <div class="info-label">Total Orders Created</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PENDING ORDERS -->
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="card metric-card metric-gradient-pending p-3">
+          <div class="d-flex flex-column align-items-center justify-content-center">
+            <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip"
+              title="Orders with at least one item in pending status">
+              <i class="fa-solid fa-hourglass-half text-danger me-1" style="font-size: 0.8rem;"></i>
+              <span class="info-value" id="count-pending-orders-t1">0</span>
+            </div>
+            <div id="chart-pending-orders-t1" class="metric-chart mb-2"></div>
+            <div class="info-label">Orders with Pending Items</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPROVED ORDERS -->
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="card metric-card metric-gradient-approved p-3">
+          <div class="d-flex flex-column align-items-center justify-content-center">
+            <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip"
+              title="Orders where all items are approved">
+              <i class="fa-solid fa-thumbs-up text-primary me-1" style="font-size: 0.8rem;"></i>
+              <span class="info-value" id="count-approved-orders-t1">0</span>
+            </div>
+            <div id="chart-approved-orders-t1" class="metric-chart mb-2"></div>
+            <div class="info-label">Orders with All Items Approved</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EXECUTED ORDERS -->
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="card metric-card metric-gradient-executed p-3">
+          <div class="d-flex flex-column align-items-center justify-content-center">
+            <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip"
+              title="Orders where all items are executed">
+              <i class="fa-solid fa-circle-check text-success me-1" style="font-size: 0.8rem;"></i>
+              <span class="info-value" id="count-executed-orders-t1">0</span>
+            </div>
+            <div id="chart-executed-orders-t1" class="metric-chart mb-2"></div>
+            <div class="info-label">Orders with All Items Executed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 mt-2">
+      <div class="col-lg-12 col-sm-12">
+        <div id="chart-orders-bar-t1" class="mb-2">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab2 Charts -->
+  <!-- Last 6 Months Orders Overview -->
+  <div class="tab-pane fade" id="navs-justified-charts-sixmonths" role="tabpanel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="m-0">Last 6 Months Overview</h5>
+            <small class="text-muted text-dataupdate-time-t2" style="font-size: 0.75rem;"></small>
+        </div>
+
+        <div class="row g-4 mb-2">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div id="chart-pastmonths-orders" class="mb-2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div id="chart-top-items" class="mb-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </div>
+
+
+   <!-- Tab3 charts-->
+
+   <div class="tab-pane fade" id="navs-justified-charts-alltime" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="m-0 overview-title3">Orders History Overview</h5>
+            <small class="text-muted text-dataupdate-time-t3" style="font-size: 0.75rem;"></small>
+        </div>
+
+        <div class="row g-3">
+            <!-- TOTAL ORDERS -->
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="card metric-card metric-gradient-total p-3">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip"
+                             title="Total orders created in the selected time period">
+                            <i class="fa-solid fa-box text-success me-1" style="font-size: 1rem;"></i>
+                            <span class="info-value" id="count-total-orders-t3">0</span>
+                        </div>
+                        <div id="chart-total-orders-t3" class="metric-chart mb-2"></div>
+                        <div class="info-label">Total Orders Created</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PENDING ORDERS -->
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="card metric-card metric-gradient-pending p-3">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip"
+                             title="Orders with at least one item in pending status">
+                            <i class="fa-solid fa-hourglass-half text-danger me-1" style="font-size: 0.8rem;"></i>
+                            <span class="info-value" id="count-pending-orders-t3">0</span>
+                        </div>
+                        <div id="chart-pending-orders-t3" class="metric-chart mb-2"></div>
+                        <div class="info-label">Orders with Pending Items</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APPROVED ORDERS -->
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="card metric-card metric-gradient-approved p-3">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip"
+                             title="Orders where all items are approved">
+                            <i class="fa-solid fa-thumbs-up text-primary me-1" style="font-size: 0.8rem;"></i>
+                            <span class="info-value" id="count-approved-orders-t3">0</span>
+                        </div>
+                        <div id="chart-approved-orders-t3" class="metric-chart mb-2"></div>
+                        <div class="info-label">Orders with All Items Approved</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXECUTED ORDERS -->
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="card metric-card metric-gradient-executed p-3">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="d-flex align-items-center mb-2" data-bs-toggle="tooltip"
+                             title="Orders where all items are executed">
+                            <i class="fa-solid fa-circle-check text-success me-1" style="font-size: 0.8rem;"></i>
+                            <span class="info-value" id="count-executed-orders-t3">0</span>
+                        </div>
+                        <div id="chart-executed-orders-t3" class="metric-chart mb-2"></div>
+                        <div class="info-label">Orders with All Items Executed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-2">
+            <div class="col-lg-12 col-sm-12">
+                <div id="chart-orders-bar-t3" class="mb-2">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!-- CUSTOMER DAHSBAORD CONTENT /-->

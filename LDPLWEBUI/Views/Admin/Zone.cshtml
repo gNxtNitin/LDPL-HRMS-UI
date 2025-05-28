@@ -1,0 +1,301 @@
+﻿@{
+	Layout = "_DashboardLayout";
+}
+
+@section PageStyles {
+	<link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+	<link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+	<link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+	<link rel="stylesheet" href="~/css/site.css" />
+	<style>
+		.form-label.required::after {
+			content: " *";
+			color: red;
+		}
+	</style>
+}
+
+
+@section PageScripts
+{
+
+	<script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+	<script src="~/js/Admin/Zone.js"></script>
+
+	@* <script src="~/app-assets/js/app-user-list.js"></script> *@
+}
+
+
+<div class="offcanvas offcanvas-end" id="add-new-record">
+	<div class="offcanvas-header border-bottom">
+		<h5 class="offcanvas-title" id="exampleModalLabel">New Zone</h5>
+		<button type="button"
+				class="btn-close text-reset"
+				data-bs-dismiss="offcanvas"
+				aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body flex-grow-1">
+		<form class="add-new-record pt-0 row g-2" id="form-add-new-record" onsubmit="return false">
+			<div class="col-sm-12">
+				<div class=" text-right">
+					<label for="zname" class="form-label required">Zone:</label>
+				</div>
+				<div class=" ">
+					<input type="text" class="form-control dt-zname" id="zname" name="zname" placeholder="Enter Zone" maxlength="60">
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<button class="btn btn-danger m-2" data-bs-dismiss="offcanvas" id="btn-cancel" type="button">Cancel</button>
+				<button class="btn btn-primary m-2" id="btn-submit" type="button">Submit</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+<!--This is the modal-->
+@* <div class="modal fade" id="shareProject" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-simple modal-enable-otp modal-share-project modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center">
+					<h4 class="mb-2">Add Zone </h4>
+					
+				</div>
+			</div>
+			 <div class="form-fillout">
+			<form id="formAddNewRecord">
+				<div class="col-6">
+					<div class=" text-right">
+						<label for="zname" class="form-label">Zone:</label>
+					</div>
+					<div class=" ">
+						<input type="text" class="form-control" id="zname" name="zname" placeholder="Enter Zone" maxlength="60">
+					</div>
+				</div>
+			</form>
+			</div> 
+			<div class="row my-2 mx-0">
+				<div class="d-flex gap-2 justify-content-end">
+					<button class="btn btn-danger m-2" data-bs-dismiss="modal" id="btn-cancel" type="button">Cancel</button>
+					<button class="btn btn-primary m-2" id="btn-submit" type="button">Submit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> *@
+<!-- Tjis is the main portal;-->
+<div class="card">
+	<div class="card-datatable table-responsive">
+		<table class="datatables-orders table table-hover dt-table-striped">
+			<thead class="border-top bg-menu-theme text-white fw-2">
+				<tr>
+
+					<th></th>
+				@* 	<th>S. No.</th> *@
+					<th>Zone</th>
+					<th>Created Date</th>
+					<th>Actions</th>
+
+				</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+<button type="button" class=" modal-weigh" style="display:none;" data-bs-toggle="modal" data-bs-target="#shareProject">
+	Show
+</button>
+
+<script>
+	var fv;
+	$(document).ready(function () {
+		 fv = FormValidation.formValidation(document.getElementById('form-add-new-record'), {
+		  fields: {
+			zname: {
+			  validators: {
+				notEmpty: {
+				  message: 'Zone is required.'
+				}
+			  }
+			}
+
+		  },
+		  plugins: {
+			trigger: new FormValidation.plugins.Trigger(),
+			bootstrap5: new FormValidation.plugins.Bootstrap5({
+			  eleValidClass: '',
+			  rowSelector: '.row'
+			}),
+			submitButton: new FormValidation.plugins.SubmitButton(),
+			autoFocus: new FormValidation.plugins.AutoFocus()
+		  },
+		  init: instance => {
+			instance.on('plugins.message.placed', function (e) {
+			  if (e.element.parentElement.classList.contains('input-group')) {
+				e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+			  }
+			});
+		  }
+		});
+		//console.log(fv);
+	})
+</script>
+
+
+<script>
+	$(document).ready(function () {
+		document.getElementById('btn-submit').addEventListener('click', function () {
+			//console.log(fv);
+			var btn = $(this);
+			fv.validate().then(function (status) {
+
+				if (status !== 'Valid') {
+
+				  // If valid, you can manually submit the form here
+				  return;
+				}
+				else{
+
+
+					btn.prop('disabled', true);
+
+					$(".offcanvas-body").block({
+						message: '<div class="spinner-border text-primary" role="status"></div>',
+
+						css: {
+							border: 'none',
+							backgroundColor: 'transparent'
+						},
+
+						overlayCSS: {
+							backgroundColor: '#fff',
+							opacity: 0.8
+
+						}
+					});
+
+						var zoneInfo = {
+							flag: "C",
+							name: $('#zname').val().trim(),
+							
+						};
+
+						$.post({
+							url: '@Url.Action("AddUpdateDeleteZone", "Admin")',
+							data: { sr1: zoneInfo },
+							success: function (resp) {
+								btn.prop('disabled', false);
+								$(".offcanvas-body").unblock();
+								if(resp.code>0){
+									$('#add-new-record').offcanvas('toggle');
+									zone_table.ajax.reload(null, false);
+									ToastWrapper.success(`Zone Added successfully!`);
+								}
+								else{
+									ToastWrapper.error(resp.message);
+								}
+								
+
+
+							},
+							error: function (xhr, status, error) {
+								btn.prop('disabled', false);
+								$(".offcanvas-body").unblock();
+								ToastWrapper.error("Something went wrong.")
+							}
+						});
+
+
+				}
+			});
+
+
+
+
+
+
+
+
+		});
+	})
+</script>
+
+
+<script>
+	function deleteRecord () {
+	$('.datatables-orders').on('click', '.delete-record', function() {
+	 //$('.delete-record').on('click', function() {
+		 
+		var btn = $(this);
+		var row = $(this).closest('tr');
+		Swal.fire({
+
+			text: 'Are you sure you would like to delete this item?',
+
+			icon: 'warning',
+
+			showCancelButton: true,
+
+			confirmButtonText: 'Yes',
+
+			customClass: {
+
+				confirmButton: 'btn btn-primary me-2 waves-effect waves-light',
+
+				cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+
+			},
+
+			buttonsStyling: false
+
+		}).then(function (result) {
+
+			if (result.value) {
+				btn.prop('disabled', true);
+				var itemList = [];
+
+
+				var id1 = zone_table.row(row).data();
+				//console.log(id1['zoneid']);
+				//var id = row.find('td:eq(0)').text();
+				//var quantity = row.find('td').eq(5).find('input').val();
+				
+			   var zoneInfo = {
+							flag: "D",
+							zoneid: id1['zoneid'],
+
+						};
+			   $.post({
+				   url: '@Url.Action("AddUpdateDeleteZone", "Admin")',
+				   data: { sr1 : zoneInfo },
+				   success: function (resp) {
+					   btn.prop('disabled', false);
+					   //console.log(resp);
+					   if (resp.code > 0 )
+					  {
+						zone_table.row(btn.parents('tr')).remove().draw();
+						ToastWrapper.success(`Zone deleted successfully!`);
+					  }else{
+						  //console.log(resp);
+						   ToastWrapper.error(resp.message);
+					  }
+
+
+				   },
+				   error: function (xhr, status, error) {
+					   btn.prop('disabled', false);
+					   ToastWrapper.error(xhr.responseText);
+				   }
+			   });
+			}
+			else{
+			}
+		});
+
+
+
+
+	   });
+	}
+</script>

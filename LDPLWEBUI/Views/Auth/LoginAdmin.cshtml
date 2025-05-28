@@ -1,0 +1,180 @@
+﻿@{
+    Layout = "_BlankLayout";
+    ViewBag.Title = "Login";
+}
+@model UserLogin;
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/app-assets/vendor/css/pages/page-auth.css">
+
+    <style>
+        .bg-cover-custom {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            filter: blur(1px) brightness(0.8);
+            opacity: 0.8;
+        }
+    </style>
+
+}
+
+@section PageScripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    @* <script src="~/js/captcha.js"></script> *@
+
+}
+
+<div class="position-relative overflow-hidden min-vh-100">
+
+    <!-- Background Image -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-cover-custom"
+         style="background-image: url('@Url.Content("~/static/authpage_bg.jpg")'); z-index: 0;">
+    </div>
+
+    <div class="position-relative d-flex justify-content-center align-items-center min-vh-100" style="z-index: 1;">
+        <div class="authentication-wrapper authentication-basic container-p-y">
+            <div class="authentication-inner py-6">
+                <!-- Login -->
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Logo -->
+                        <div class="app-brand justify-content-center">
+                            <a href="/" class="app-brand-link">
+                                <span class="app-brand-logo demo">
+
+                                    <img src="~/static/logo.png" alt="LDPL Logo" class="img-fluid img-thumbnail" style="max-width: 150px; max-height: 80px;">
+                                </span>
+                                @*  <span class="app-brand-text demo text-heading fw-bold">LDPL</span> *@
+                            </a>
+                        </div>
+                        <!-- Logo -->
+                        <h4 class="mb-1">Admin Portal</h4>
+                        <p class="mb-6">Please sign-in to your account</p>
+
+                        <form id="loginForm" class="mb-4" asp-asp-controller="Auth" asp-action="LoginAdmin" method="POST" asp-antiforgery="true">
+                            <div class="mb-6">
+                                <label for="EmailId" class="form-label">Email ID</label>
+                                <input type="text" class="form-control" id="emailOrPhone" name="EmailId" asp-for="EmpCode" placeholder="Enter your Cutomer ID" autofocus>
+                                <span asp-validation-for="EmpCode" class="text-danger"></span>
+                            </div>
+                            <div class="mb-6 form-password-toggle">
+                                <label class="form-label" for="password">Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" id="password" class="form-control" name="password" asp-for="Password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+
+                            <div class="mb-6 captcha-container">
+                                <!-- dynamic captcha rendering -->
+                            </div>
+
+                            @* <div class="my-8">
+                            <div class="d-flex justify-content-between">
+                                <div class="form-check mb-0 ms-2">
+                                    <input class="form-check-input" type="checkbox" id="remember-me" asp-for="IsRememberMe">
+                                    <label class="form-check-label" for="remember-me">
+                                        Remember Me
+                                    </label>
+                                </div>
+                                <a asp-asp-controller="Auth" asp-action="ForgotPassword" asp-controller="Auth">
+                                    <p class="mb-0">Forgot Password?</p>
+                                </a>
+                            </div>
+                        </div> *@
+                            <div class="mb-6">
+                                <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
+                            </div>
+                        </form>
+
+                        @* <p class="text-center">
+                        <span>New on our platform?</span>
+                        <a asp-action="Register" asp-controller="Auth">
+                            <span>Create an account</span>
+                        </a>
+                    </p> *@
+                    </div>
+                </div>
+                <!-- Register -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    //error messages
+    $(document).ready(()=>{
+
+        ToastWrapper.init({
+            positionClass: 'toast-top-right',
+            timeOut: 3000,
+            progressBar:true
+
+        });
+
+        const errm1 = '@ViewData["LoginErrorMessage"]';
+        if(errm1.trim() !== '') ToastWrapper.error(errm1);
+
+        const errm2 = '@TempData["ForgotPasswordRequestError"]';
+        if(errm2.trim() !== '') ToastWrapper.error(errm2);
+
+        const errm3 = '@TempData["OTPValidationError"]';
+        if(errm3.trim() !== '') ToastWrapper.error(errm3);
+
+        const errm4 = '@TempData["ResetPasswordSuccessMessage"]';
+        if(errm4.trim() !== '') ToastWrapper.success(errm4);
+
+        const errm5 = '@TempData["ResetPasswordErrorMessage"]';
+        if(errm5.trim() !== '') ToastWrapper.error(errm5);
+
+
+        $('.form-password-toggle i').click(function (e) {
+              e.preventDefault();
+              const $input = $(this).closest('.form-password-toggle').find('input');
+              const isPassword = $input.attr('type') === 'password';
+
+              $input.attr('type', isPassword ? 'text' : 'password');
+              $(this).toggleClass('ti-eye ti-eye-off');
+        });
+
+
+        const isCaptcha = $("#captchaImg").length > 0;
+        if(isCaptcha){
+            $("#loginForm").on('submit', async function (e) {
+            e.preventDefault();
+
+            const $form = $(this);
+            const errorMessage = document.getElementById("captchaError");
+            errorMessage.classList.add("d-none");
+
+
+            try {
+                const resp = await validatecaptcha();
+
+                if (resp.success === true) {
+                    // Temporarily remove handler to avoid recursion
+                    $form.off('submit');
+
+                    // Submit the form normally
+                    $form.submit();
+                } else {
+                    errorMessage.innerText = resp.message || "Captcha validation failed.";
+                    errorMessage.classList.remove("d-none");
+                }
+
+            } catch (error) {
+                console.error("Captcha validation error:", error);
+                errorMessage.innerText = "An unexpected error occurred. Please try again.";
+                errorMessage.classList.remove("d-none");
+            }
+        });
+      }
+    });
+</script>

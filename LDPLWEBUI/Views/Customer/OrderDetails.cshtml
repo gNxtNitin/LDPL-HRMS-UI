@@ -1,0 +1,317 @@
+﻿@{
+	Layout = "_DashboardLayout";
+}
+
+@section PageStyles {
+	@* <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-2.2.2/b-3.2.2/b-html5-3.2.2/datatables.min.css" rel="stylesheet" integrity="sha384-phsRODMHDx/Szwio+6pjQEB/ynoxdLQWAa9LkXfGzCxNx928c9XULdHHCRCxsItb" crossorigin="anonymous"> *@
+	<link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+	<link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+	<link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+	<link rel="stylesheet" href="~/css/site.css" />
+	
+	<style>
+		.quant-input {
+			border: none;
+			background: none;
+			border-radius: 5px;
+			width: 90px;
+			text-align: end;
+		}
+
+		.show-quant {
+			border: 1px solid #b8b8b8 !important;
+			/* background: #ffffff !important; */
+			padding: 5px;
+			text-align: left !important;
+		}
+
+		.force-hide {
+			display: none !important;
+		}
+
+		.btn-custom-filter {
+			pointer-events: none;
+			padding: 5px;
+		}
+
+		.order-detail-card .card-header {
+			padding: 0.1rem;
+		}
+
+		.order-detail-card .card-body .d-flex {
+			flex-wrap: wrap; /* Allow wrapping of the flex items */
+		}
+
+		/* Adjust layout on small screens */
+		@@media (max-width: 850px) {
+			.order-detail-card .card-body .d-flex .d-flex.align-items-center {
+				flex-direction: column; /* Stack items vertically on small screens */
+				text-align: center;
+			}
+
+				.order-detail-card .card-body .d-flex .d-flex.align-items-center .card-info h5 {
+					font-size: 0.75rem; /* Reduce font size for smaller screens */
+				}
+
+				.order-detail-card .card-body .d-flex .d-flex.align-items-center .badge {
+					font-size: 0.9rem; /* Shrink the icons on smaller screens */
+				}
+		}
+
+		/* Further adjustments for very small screens (e.g., mobile) */
+		@@media (max-width: 576px) {
+			.order-detail-card .card-body .d-flex .d-flex.align-items-center .card-info h5 {
+				font-size: 0.67rem; /* Further reduce font size */
+			}
+
+			.order-detail-card .card-body .d-flex .d-flex.align-items-center .badge {
+				font-size: 0.8rem; /* Even smaller icons */
+			}
+		}
+	</style>
+}
+
+@section PageScripts
+{
+
+	<script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+	<script src="~/js/OrderDetails.js"></script>
+	@* <script src="~/app-assets/js/app-user-list.js"></script> *@
+}
+
+
+
+
+<!-- Users List Table -->
+<input type="hidden" id="req-str" value="@ViewBag.reqstr" />
+
+
+<div class="col-lg-12 col-md-12 mb-2">
+	<div class="card h-100 order-detail-card">
+		<div class="card-header d-flex justify-content-between">
+			<h5 class="card-title mb-0 p-2">Order Summary</h5>
+			@* <small class="text-muted">Updated 1 month ago</small> *@
+		</div>
+		<div class="card-body">
+			<div class="d-flex justify-content-between">
+				<div class="">
+					<div class="d-flex align-items-center">
+						<div class="badge rounded bg-label-primary me-4 p-2">
+							<i class="ti ti-trolley ti-lg"></i>
+						</div>
+						<div class="card-info">
+							<h5 class="mb-0 or-number">-</h5>
+							<small>Order Number</small>
+						</div>
+					</div>
+				</div>
+				<div class="">
+					<div class="d-flex align-items-center">
+						<div class="badge rounded bg-label-info me-4 p-2"><i class="ti ti-calendar-event ti-lg"></i></div>
+						<div class="card-info">
+							<h5 class="mb-0 or-date">-</h5>
+							<small>Order Date</small>
+						</div>
+					</div>
+				</div>
+				<div class="">
+					<div class="d-flex align-items-center">
+						<div class="badge rounded bg-label-warning me-4 p-2">
+							<i class="ti ti-basket-code ti-lg"></i>
+						</div>
+						<div class="card-info">
+							<h5 class="mb-0 or-pi">-</h5>
+							<small>Pending Items</small>
+						</div>
+					</div>
+				</div>
+				<div class="">
+					<div class="d-flex align-items-center">
+						<div class="badge rounded bg-label-info me-4 p-2">
+							<i class="ti ti-basket-bolt ti-lg"></i>
+						</div>
+						<div class="card-info">
+							<h5 class="mb-0 or-ai">-</h5>
+							<small>Approved Items</small>
+						</div>
+					</div>
+				</div>
+				<div class="">
+					<div class="d-flex align-items-center">
+						<div class="badge rounded bg-label-success me-4 p-2">
+							<i class="ti ti-basket-check ti-lg"></i>
+						</div>
+						<div class="card-info">
+							<h5 class="mb-0 or-ei">-</h5>
+							<small>Executed Items</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-datatable table-responsive">
+		<table class="datatables-orderdetails table table-hover dt-table-striped">
+			<thead class="border-top bg-menu-theme text-white fw-2">
+				<tr>
+
+					@* <th>Order Number</th>
+                    <th>Order Date</th> *@
+					<th>Title Code</th>
+					<th>Title Name</th>
+
+					<th>UOM</th>
+					<th>Quantity</th>
+					<th>MRP</th>
+					<th>Discount %</th>
+					<th>Amount</th>
+					<th>Status</th>
+					<th>Actions</th>
+					<th></th>
+
+				</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+
+
+
+<script>
+	function updateRecord () {
+	 $('.datatables-orderdetails tbody').on('click','.update-record', function() {
+		   var btn = $(this);
+		   var itemList = [];
+		   var row = $(this).closest('tr');
+
+
+		   var id = row.find('td:eq(0)').text();
+		   var quantity = row.find('td').eq(3).find('input').val();
+		   if(parseInt(quantity) === 0)
+		   {
+			   ToastWrapper.error("Please enter quantity greater than 0.");
+			   return;
+		   }
+		   itemList.push({
+				ITEM_CODE: id,
+				ITEM_QTY: quantity
+		   });
+		 btn.prop('disabled', true);
+		   var shippingInfo = {
+			   AutoKeyOrder: parseInt($('.or-number').text()),
+			   ShipToParty:'',
+			   ShipToAddress: '',
+			   TransporterName: '',
+			   BookingStation: '',
+			   CustomerPoNo: '',
+			   SchoolName: '',
+			   Items: itemList
+		   };
+		   $.post({
+			   url: '@Url.Action("UpdateOrder", "Customer")',
+			   data: { sr1 : JSON.stringify(shippingInfo) },
+			   success: function (resp) {
+				   btn.prop('disabled', false);
+				   if (resp.code > 0 )
+				   {
+						orderdetails_table.ajax.reload(null, false);
+						ToastWrapper.success(`Quantity Updated successfully!`);
+				   }
+				   else{
+					   ToastWrapper.error(resp.message);
+				   }
+
+
+			   },
+			   error: function (xhr, status, error) {
+				   btn.prop('disabled', false);
+				   ToastWrapper.error(xhr.responseText);
+				   //alert(2);
+			   }
+		   });
+	   });
+	}
+</script>
+<script>
+	 function deleteRecord () {
+	 $('.datatables-orderdetails tbody').on('click', '.delete-record', function() {
+		var btn = $(this);
+		var row = $(this).closest('tr');
+		Swal.fire({
+
+			text: 'Are you sure you would like to delete this item?',
+
+			icon: 'warning',
+
+			showCancelButton: true,
+
+			confirmButtonText: 'Yes',
+
+			customClass: {
+
+				confirmButton: 'btn btn-primary me-2 waves-effect waves-light',
+
+				cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+
+			},
+
+			buttonsStyling: false
+
+		}).then(function (result) {
+
+			if (result.value) {
+				btn.prop('disabled', true);
+				var itemList = [];
+
+
+
+				var id = row.find('td:eq(0)').text();
+				//var quantity = row.find('td').eq(5).find('input').val();
+				itemList.push({
+					 ITEM_CODE: id,
+					 ITEM_QTY: '0'
+				});
+			   var shippingInfo = {
+				   AutoKeyOrder: parseInt($('.or-number').text()),
+				   ShipToParty:'',
+				   ShipToAddress: '',
+				   TransporterName: '',
+				   BookingStation: '',
+				   CustomerPoNo: '',
+				   SchoolName: '',
+				   Items: itemList
+			   };
+			   $.post({
+				   url: '@Url.Action("DeleteOrder", "Customer")',
+				   data: { sr1 : JSON.stringify(shippingInfo) },
+				   success: function (resp) {
+					   btn.prop('disabled', false);
+					   if (resp.code >0 )
+					  {
+						orderdetails_table.row(btn.parents('tr')).remove().draw();
+						ToastWrapper.success(`Item deleted successfully!`);
+					  }else{
+						   ToastWrapper.error(resp.message);
+					  }
+
+
+				   },
+				   error: function (xhr, status, error) {
+					   btn.prop('disabled', false);
+					   ToastWrapper.error(xhr.responseText);
+				   }
+			   });
+			}
+			else{
+			}
+		});
+
+
+
+
+	   });
+	}
+</script>

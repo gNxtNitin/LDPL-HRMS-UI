@@ -1,0 +1,21 @@
+﻿@{
+    Layout = "_DashboardLayout";
+}
+<input type="hidden" id="cid" value="@ViewBag.mkey" />
+<div class="card">
+    <div class="invoice-portion" style="height:100vh;">
+        <iframe id="pdfFrame" width="100%" height="100%" style="border:none;"></iframe>
+    </div>
+</div>
+<script>
+    function loadPdf(fileName) {
+        var tt = $('#cid').val();
+        var pdfUrl = '@Url.Action("ViewPdf", "Customer")' + '?cid=' + tt;
+        document.getElementById('pdfFrame').src = pdfUrl;
+    }
+
+    // Load default PDF on page load
+    window.onload = function () {
+        loadPdf('example.pdf');
+    };
+</script>

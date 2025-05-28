@@ -1,0 +1,964 @@
+﻿@{
+    Layout = "_DashboardLayout";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+   
+
+    <style>
+        .form-label.required::after {
+            content: " *";
+            color: red;
+        }
+
+        html:not([dir=rtl]) .modal .btn-close {
+            transform: translate(0px, 0px) !important;
+        }
+        .modal-body {
+            padding: 0 !important;
+        }
+
+        .modal-simple .modal-content {
+            padding: 1rem;
+            width:78%!important;
+        }
+        .select2-dropdown {
+           
+            z-index: 2001!important;
+        }
+    </style>
+}
+
+
+@section PageScripts
+{
+
+    <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/js/Admin/Employees.js"></script>
+    
+}
+
+
+<div class="modal fade" id="shareProject" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-simple modal-enable-otp modal-share-project modal-dialog-centered">
+        <div class="modal-content modal-gr">
+            <div class="modal-body modal-gr">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="">
+                    <h4 class="mb-2">Change Password </h4>
+                    @*  <p>Share project with a team member</p> *@
+                </div>
+                <div class="modal-body text-center">
+                    <form class=" pt-0 row g-2" id="form-set-password" onsubmit="return false">
+                    <input type="hidden" id="flag1" name="flag1" />
+                        <input type="hidden" id="emp-flag" name="flag2" />
+                    <div class="col-sm-12">
+                        <div class="text-start">
+                            <label for="newpassword" class="form-label required">New Password:</label>
+                        </div>
+                        <div class=" ">
+                            <input type="text" class="form-control dt-newpassword" id="new-password" name="newpassword" placeholder="New Password" maxlength="100">
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                <div class="text-start ">
+                    <label for="newcpassowrd" class="form-label required">Confirm Password:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-newcpassowrd" id="newcpassowrd" name="newcpassowrd" placeholder="Confirm New Password" maxlength="100" >
+                </div>
+            </div>
+                        <div class="col-sm-12 text-end">
+                            <button class="btn btn-danger m-2" data-bs-dismiss="modal" id="btn-cancel1" type="button">Cancel</button>
+                            <button class="btn btn-primary m-2" id="btn-submit-Pass" type="button">Submit</button>
+                        </div>
+            </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!--This is the modal-->
+<div class="offcanvas offcanvas-end" id="add-new-record">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title" id="exampleModalLabel">New Record</h5>
+        <button type="button"
+                class="btn-close text-reset"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body flex-grow-1">
+        <form class="add-new-record pt-0 row g-2" id="form-add-new-record" onsubmit="return false">
+            <input type="hidden" id="flag" name="flag" />
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="empid" class="form-label required">EMPID:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-empid" id="empid" name="empid" placeholder="Employee ID" maxlength="20" >
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="empname" class="form-label required">Name:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-empname" id="empname" name="empname" placeholder="Employee Name" maxlength="100" >
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="fname" class="form-label required">Father Name:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-fname" id="fname" name="fname" placeholder="Father's Name" maxlength="100" >
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="email" class="form-label required">Email:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-email" id="email" name="email" placeholder="Email" maxlength="100" >
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="mobile" class="form-label required">Mobile:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-mobile" id="mobile" name="mobile" placeholder="Mobile" maxlength="10" >
+                </div>
+            </div>
+            <div class="row">
+                <label for="fname" class="form-label required">Gender:</label>
+                <div class="col mt-2">
+                    <div class="form-check form-check-inline">
+                        <input name="gender"
+                               class="form-check-input"
+                               type="radio"
+                               value="male"
+                               id="gender-male"  checked/>
+                        <label class="form-check-label" for="gender">Male</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input name="gender"
+                               class="form-check-input"
+                               type="radio"
+                               value="female"
+                               id="gender-female" />
+                        <label class="form-check-label" for="gender">
+                            Female
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input name="gender"
+                               class="form-check-input"
+                               type="radio"
+                               value="others"
+                               id="gender-others" />
+                        <label class="form-check-label" for="gender">
+                            Others
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="address" class="form-label required">Address:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-address" id="address" name="address" placeholder="Address" maxlength="200" >
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="designation" class="form-label required">Designation:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-designation" id="designation" name="designation" placeholder="Designation" maxlength="100">
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="zone" class="form-label required">Zone:</label>
+                </div>
+                <div class=" ">
+                    <select class="form-select dt-zone" id="zone" name="zone" aria-label="Select Zone" required>
+
+                        <option value="">Select Zone</option>
+
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="role" class="form-label required">Role:</label>
+                </div>
+                <div class=" ">
+                    <select class="form-select dt-role" id="role" name="role" aria-label="Select Role" required>
+
+                        <option value="">Select Role</option>
+
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12 password-field">
+                <div class=" text-right">
+                    <label for="password" class="form-label required">Password:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-password" id="password" name="password" placeholder="Password" maxlength="100" >
+                </div>
+            </div>
+            @* <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="cpassowrd" class="form-label required">Confirm Password:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-cpassowrd" id="cpassowrd" name="cpassowrd" placeholder="Confirm Password" maxlength="100" >
+                </div>
+            </div> *@
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="manager" class="form-label required">Account Manager:</label>
+                </div>
+                <div class=" ">
+                    <select class="select2 form-select dt-manager" id="manager" name="manager" aria-label="Select Account Manager" data-allow-clear="true" required>
+
+                        <option value="">Select Account Manager</option>
+
+
+                    </select>
+                </div>
+            </div>
+           
+
+
+
+            <div class="col-sm-12">
+                <button class="btn btn-danger m-2" data-bs-dismiss="offcanvas" id="btn-cancel" type="button">Cancel</button>
+                <button class="btn btn-primary m-2" id="btn-submit" type="button">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Tjis is the main portal;-->
+<div class="card">
+    <div class="card-datatable table-responsive">
+        <table class="datatables-employees table table-hover dt-table-striped">
+            <thead class="border-top bg-menu-theme text-white fw-2">
+                <tr>
+
+
+                 
+                    <th>EMP ID</th>
+
+                    <th>Name</th>
+                    <th>Designation</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Zone</th>
+                    <th>Account Manager</th>
+                    <th>Created Date</th>
+                    
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<button type="button" class=" modal-weigh" style="display:none;" data-bs-toggle="modal" data-bs-target="#shareProject">
+    Show
+</button>
+<script>
+    var fv, fv1;
+    function FormValidationPassword () {
+
+         fv1 = FormValidation.formValidation(document.getElementById('form-set-password'), {
+          fields: {
+                    newpassword: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Password is required'
+                            },
+                            stringLength: {
+                                min: 6,
+                                message: 'Password must be at least 6 characters'
+                            }
+                        }
+                    },
+                    
+                    newcpassowrd: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Confirm password is required'
+                            },
+                            identical: {
+                                compare: function () {
+                                    return document.getElementById('new-password').value;
+                                },
+                                message: 'Passwords do not match'
+                            }
+                        }
+                    }
+                    
+          },
+          plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap5: new FormValidation.plugins.Bootstrap5({
+              eleValidClass: '',
+              rowSelector: '.row'
+            }),
+            submitButton: new FormValidation.plugins.SubmitButton(),
+            autoFocus: new FormValidation.plugins.AutoFocus()
+          },
+          init: instance => {
+            instance.on('plugins.message.placed', function (e) {
+              if (e.element.parentElement.classList.contains('input-group')) {
+                e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+              }
+            });
+          }
+        });
+        //console.log(fv);
+    }
+    function FormValidationNew () {
+        
+         fv = FormValidation.formValidation(document.getElementById('form-add-new-record'), {
+          fields: {
+            empid: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Employee ID is required'
+                            },
+                            stringLength: {
+                                max: 20,
+                                message: 'Employee ID must be less than 20 characters'
+                            }
+                        }
+                    },
+                    empname: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Employee name is required'
+                            },
+                            stringLength: {
+                                max: 100,
+                                message: 'Employee name must be less than 100 characters'
+                            }
+                        }
+                    },
+                    fname: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Father name is required'
+                            },
+                            stringLength: {
+                                max: 100,
+                                message: 'Father name must be less than 100 characters'
+                            }
+                        }
+                    },
+                    email: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Email is required'
+                            },
+                            // emailAddress: {
+                            //     message: 'The input is not a valid email address'
+                            // },
+                            stringLength: {
+                                max: 100,
+                                message: 'Email must be less than 100 characters'
+                            }
+                        }
+                    },
+                    mobile: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Mobile number is required'
+                            },
+                            regexp: {
+                                regexp: /^[0-9]{10,15}$/,
+                                message: 'Enter a valid mobile number (10-15 digits)'
+                            }
+                        }
+                    },
+                    gender: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Gender is required'
+                            }
+                        }
+                    },
+                    address: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Address is required'
+                            },
+                            stringLength: {
+                                max: 200,
+                                message: 'Address must be less than 200 characters'
+                            }
+                        }
+                    },
+                    zone: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Zone is required'
+                            }
+                        }
+                    },
+                    role: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Role is required'
+                            }
+                        }
+                    },
+                    password: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Password is required'
+                            },
+                            stringLength: {
+                                min: 6,
+                                message: 'Password must be at least 6 characters'
+                            }
+                        }
+                    },
+                    designation: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Designation is required'
+                            }
+                            
+                        }
+                    },
+                    // cpassowrd: {
+                    //     validators: {
+                    //         notEmpty: {
+                    //             message: 'Confirm password is required'
+                    //         },
+                    //         identical: {
+                    //             compare: function () {
+                    //                 return document.getElementById('password').value;
+                    //             },
+                    //             message: 'Passwords do not match'
+                    //         }
+                    //     }
+                    // },
+                    manager: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Account manager is required'
+                            }
+                        }
+                    },
+          },
+          plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap5: new FormValidation.plugins.Bootstrap5({
+              eleValidClass: '',
+              rowSelector: '.row'
+            }),
+            submitButton: new FormValidation.plugins.SubmitButton(),
+            autoFocus: new FormValidation.plugins.AutoFocus()
+          },
+          init: instance => {
+            instance.on('plugins.message.placed', function (e) {
+              if (e.element.parentElement.classList.contains('input-group')) {
+                e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+              }
+            });
+          }
+        });
+    }
+    function FormValidationExisting () {
+
+         fv = FormValidation.formValidation(document.getElementById('form-add-new-record'), {
+          fields: {
+            empid: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Employee ID is required'
+                            },
+                            stringLength: {
+                                max: 20,
+                                message: 'Employee ID must be less than 20 characters'
+                            }
+                        }
+                    },
+                    empname: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Employee name is required'
+                            },
+                            stringLength: {
+                                max: 100,
+                                message: 'Employee name must be less than 100 characters'
+                            }
+                        }
+                    },
+                    fname: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Father name is required'
+                            },
+                            stringLength: {
+                                max: 100,
+                                message: 'Father name must be less than 100 characters'
+                            }
+                        }
+                    },
+                    email: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Email is required'
+                            },
+                            // emailAddress: {
+                            //     message: 'The input is not a valid email address'
+                            // },
+                            stringLength: {
+                                max: 100,
+                                message: 'Email must be less than 100 characters'
+                            }
+                        }
+                    },
+                    mobile: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Mobile number is required'
+                            },
+                            regexp: {
+                                regexp: /^[0-9]{10,15}$/,
+                                message: 'Enter a valid mobile number (10-15 digits)'
+                            }
+                        }
+                    },
+                    gender: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Gender is required'
+                            }
+                        }
+                    },
+                    address: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Address is required'
+                            },
+                            stringLength: {
+                                max: 200,
+                                message: 'Address must be less than 200 characters'
+                            }
+                        }
+                    },
+                    zone: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Zone is required'
+                            }
+                        }
+                    },
+                    role: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Role is required'
+                            }
+                        }
+                    },
+                    // password: {
+                    //     validators: {
+                    //         notEmpty: {
+                    //             message: 'Password is required'
+                    //         },
+                    //         stringLength: {
+                    //             min: 6,
+                    //             message: 'Password must be at least 6 characters'
+                    //         }
+                    //     }
+                    // },
+                    designation: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Designation is required'
+                            }
+
+                        }
+                    },
+                    // cpassowrd: {
+                    //     validators: {
+                    //         notEmpty: {
+                    //             message: 'Confirm password is required'
+                    //         },
+                    //         identical: {
+                    //             compare: function () {
+                    //                 return document.getElementById('password').value;
+                    //             },
+                    //             message: 'Passwords do not match'
+                    //         }
+                    //     }
+                    // },
+                    manager: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Account manager is required'
+                            }
+                        }
+                    },
+          },
+          plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap5: new FormValidation.plugins.Bootstrap5({
+              eleValidClass: '',
+              rowSelector: '.row'
+            }),
+            submitButton: new FormValidation.plugins.SubmitButton(),
+            autoFocus: new FormValidation.plugins.AutoFocus()
+          },
+          init: instance => {
+            instance.on('plugins.message.placed', function (e) {
+              if (e.element.parentElement.classList.contains('input-group')) {
+                e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+              }
+            });
+          }
+        });
+        //console.log(fv);
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        document.getElementById('btn-submit').addEventListener('click', function () {
+            //console.log(fv);
+            var btn = $(this);
+            fv.validate().then(function (status) {
+
+                if (status !== 'Valid') {
+
+                  // If valid, you can manually submit the form here
+                  return;
+                }
+                else{
+
+
+                    btn.prop('disabled', true);
+
+                    $(".offcanvas-body").block({
+                        message: '<div class="spinner-border text-primary" role="status"></div>',
+
+                        css: {
+                            border: 'none',
+                            backgroundColor: 'transparent'
+                        },
+
+                        overlayCSS: {
+                            backgroundColor: '#fff',
+                            opacity: 0.8
+
+                        }
+                    });
+
+                    var userModel = {
+                        flag :  $('#flag').val(),
+                        UserRoleId: $('#role').val(),
+                        EmpId: $('#empid').val(),
+                        EName: $('#empname').val(),
+                        Email: $('#email').val(),
+                        EFName: $('#fname').val(),
+                        Password: $('#password').val(),
+                        Designation: $('#designation').val(), // Add if you have a field for this
+                        Department: $('#zone').val(),  // Add if you have a field for this
+                        Gender: $('input[name="gender"]:checked').val(),
+                        Mobile: $('#mobile').val(),
+                        Address: $('#address').val(),
+                        //LogDate: new Date().toISOString(), // You can replace with desired date format
+                        AccountManager: $('#manager').val()
+                    };
+                    // console.log(userModel);
+                    // return;
+                    // var obj = new Object();
+                    // obj.flag = 'C';
+                    // obj.SchoolCode= 'new';
+                    // obj.empid= $('.dt-empid').val();
+                    // obj.ename= $('.dt-empname').val();
+                    // obj.incharge= $('.dt-empdep').val();
+                    // obj.AccountManager= $('.dt-empman').val();
+                    // obj.VendorType= $('.dt-vendor').val();
+                    // obj.SchoolCategory= $('.dt-scat').val();
+                    // obj.SchoolName= $('.dt-school').val();
+                    // obj.saddress= $('.dt-address').val();
+                    // obj.state= $('.dt-state').val();
+                    // obj.city= $('.dt-city').val();
+                       
+                        $.post({
+                            url: '@Url.Action("AddUpdateDeleteEmployee", "Admin")',
+                            data: { sr1: userModel },
+                            success: function (resp) {
+                                btn.prop('disabled', false);
+                                $(".offcanvas-body").unblock();
+
+                                if(resp.code>0){
+                                    $('#add-new-record').offcanvas('toggle');
+                                    employee_table.ajax.reload(null, false);
+                                   
+                                    ToastWrapper.success(resp.message);
+                                }
+                                else{
+                                    ToastWrapper.error(resp.message);
+                                }
+                                
+                                
+
+
+                            },
+                            error: function (xhr, status, error) {
+                                btn.prop('disabled', false);
+                                 $(".offcanvas-body").unblock();
+                                ToastWrapper.error("Something went wrong.")
+                            }
+                        });
+
+
+                }
+            });
+
+
+
+
+
+
+
+
+        });
+    })
+</script>
+<script>
+    var zone, role, manager;
+    $(document).ready(function () {
+
+        $.get("/Admin/GetData", { sr1: "E" }, function(response) {
+            //console.log(response);
+            var resp = JSON.parse(response);
+            // Parsing Each list to each Variable required
+            resp.forEach(function(item, index) {
+                    switch (index) {
+                        case 0:
+                            zone = JSON.parse(item);
+                            break;
+                        case 1:
+                            role = JSON.parse(item);
+                            break;
+                        case 2:
+                            manager = JSON.parse(item);
+                            break;
+                        
+                        default:
+                            // fallback if needed
+                    }
+
+            });
+            //console.log(zone);
+         
+            // For Vendor Select input
+            zone.forEach(function (item) {
+                //console.log(item.SERIALNO) ;
+                $('.dt-zone').append(`<option value="${item.SERIALNO}">${item.DEPARTMENT}</option>`);
+            });
+            // For CAtegory select input
+            role.forEach(function (item) {
+                $('.dt-role').append(`<option value="${item.USER_ROLE_ID}">${item.USER_ROLE_ID}</option>`);
+            });
+            // For STate select input
+            manager.forEach(function (item) {
+                $('.dt-manager').append(`<option value="${item.EMPID}">${item.ENAME}</option>`);
+            });
+            
+            $('.select2').select2();
+
+        });
+    })
+</script>
+<script>
+    function deleteRecord () {
+     $('.datatables-employees').on('click', '.delete-record', function() {
+
+        var btn = $(this);
+        var row = $(this).closest('tr');
+    //console.log(user_table.row(row).data());
+        Swal.fire({
+
+            text: 'Are you sure you would like to delete this item?',
+
+            icon: 'warning',
+
+            showCancelButton: true,
+
+            confirmButtonText: 'Yes',
+
+            customClass: {
+
+                confirmButton: 'btn btn-primary me-2 waves-effect waves-light',
+
+                cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+
+            },
+
+            buttonsStyling: false
+
+        }).then(function (result) {
+
+            if (result.value) {
+                btn.prop('disabled', true);
+
+
+
+                var id1 = employee_table.row(row).data();
+               // console.log(id1['zoneid']);
+                //var id = row.find('td:eq(0)').text();
+                //var quantity = row.find('td').eq(5).find('input').val();
+                console.log(id1);
+               var empInfo = {
+                            flag: "D",
+                            EmpId: id1['empId'],
+                        };
+               $.post({
+                   url: '@Url.Action("AddUpdateDeleteEmployee", "Admin")',
+                   data: { sr1 : empInfo },
+                   success: function (resp) {
+                       btn.prop('disabled', false);
+                       if (resp.code > 0)
+                      {
+                       employee_table.row(btn.parents('tr')).remove().draw();
+                        ToastWrapper.success(`Employee deleted successfully!`);
+                      }else{
+                           ToastWrapper.error(resp.message);
+                      }
+
+
+                   },
+                   error: function (xhr, status, error) {
+                       btn.prop('disabled', false);
+                       ToastWrapper.error(xhr.responseText);
+                   }
+               });
+            }
+            else{
+            }
+        });
+
+
+
+
+       });
+    }
+</script>
+<script>
+    function setPassword () {
+        $('.datatables-employees').on('click', '.edit-password', function() {
+            var btn = $(this);
+            var row = $(this).closest('tr');
+            var id1 = employee_table.row(row).data();
+            $('#flag1').val('P');
+            $('#emp-flag').val(id1.empId);
+            $('.modal-weigh').trigger('click');
+
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        document.getElementById('btn-submit-Pass').addEventListener('click', function () {
+            //console.log(fv);
+            var btn = $(this);
+            fv1.validate().then(function (status) {
+
+                if (status !== 'Valid') {
+
+                  // If valid, you can manually submit the form here
+                  return;
+                }
+                else{
+
+
+                    btn.prop('disabled', true);
+
+                    // $(".offcanvas-body").block({
+                    //     message: '<div class="spinner-border text-primary" role="status"></div>',
+
+                    //     css: {
+                    //         border: 'none',
+                    //         backgroundColor: 'transparent'
+                    //     },
+
+                    //     overlayCSS: {
+                    //         backgroundColor: '#fff',
+                    //         opacity: 0.8
+
+                    //     }
+                    // });
+
+                    var userModel = {
+                        flag :  $('#flag1').val(),
+                        
+                        EmpId: $('#emp-flag').val(),
+                        
+                        Password: $('.dt-newpassword').val(),
+                        
+                    };
+                    
+
+                        $.post({
+                            url: '@Url.Action("AddUpdateDeleteEmployee", "Admin")',
+                            data: { sr1: userModel },
+                            success: function (resp) {
+                                btn.prop('disabled', false);
+                                // $(".offcanvas-body").unblock();
+
+                                if(resp.code>0){
+                                    // $('#add-new-record').offcanvas('toggle');
+                                    employee_table.ajax.reload(null, false);
+
+                                    ToastWrapper.success(resp.message);
+                                    $('#btn-cancel1').trigger('click');
+                                }
+                                else{
+                                    ToastWrapper.error(resp.message);
+                                }
+
+
+
+
+                            },
+                            error: function (xhr, status, error) {
+                                btn.prop('disabled', false);
+                                 $(".offcanvas-body").unblock();
+                                ToastWrapper.error("Something went wrong.")
+                            }
+                        });
+
+
+                }
+            });
+
+
+
+
+
+
+
+
+        });
+    })
+</script>

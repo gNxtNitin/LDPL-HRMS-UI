@@ -1,0 +1,113 @@
+﻿@{
+    Layout = "_DashboardLayout";
+    ViewBag.Title = "My EPunch Report";
+}
+
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link href="~/app-assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <style>
+        .viewer-container {
+            height: 80vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .panzoom-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .viewer-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            object-fit: contain;
+        }
+
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            z-index: 5;
+            filter: drop-shadow(0 0 4px black);
+            opacity: 1 !important;
+        }
+
+        .custom-checkbox {
+            border: 2px solid #fff;
+        }
+
+            .custom-checkbox:checked {
+                filter: invert(1);
+            }
+
+    </style>
+
+}
+
+
+@section PageScripts
+{
+    <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.min.js"></script>
+    <script src="~/js/reports/mypunchingreport.js"></script>
+
+}
+
+<div class="card">
+
+    <div class="card-datatable table-responsive">
+        <table class="datatables-epunchreport table table-hover dt-table-striped">
+            <thead class="border-top bg-menu-theme text-white fw-2">
+                <tr>
+                    <th>EMP ID</th>
+                    <th>EMP NAME</th>
+                    <th>Zone</th>
+                    <th>GeoLoc</th>
+                    <th>Punch DateTime</th>
+                    <th>KM</th>
+                    <th>Address</th>
+                    <th>Location</th>
+                    <th>EPohto</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="imageViewerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-fullscreen-sm-down">
+        <div class="modal-content">
+            <div class="modal-header justify-content-center py-4">
+                <h5 class="modal-title">Epunch Image</h5>
+                <a id="downloadLink" class="btn btn-sm btn-outline-primary ms-auto" href="#" download>
+                    <i class="ti ti-download" title="Download File"></i>
+                </a>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 d-flex justify-content-center align-items-center" style="min-height: 400px;">
+                <div class="panzoom-container position-relative overflow-hidden" style="max-width: 100%; max-height: 100%;">
+                    <img id="Ephoto" src="#" alt="Epunch Image" class="img-fluid" style="max-width: 100%; max-height: 80vh; cursor: grab;" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

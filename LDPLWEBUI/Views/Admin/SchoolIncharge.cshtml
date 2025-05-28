@@ -1,0 +1,268 @@
+﻿@{
+    Layout = "_DashboardLayout";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+}
+
+
+@section PageScripts
+{
+
+    <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/js/Admin/SchoolIncharge.js"></script>
+    @* <script src="~/js/OrderMaster.js"></script>
+    <script src="~/js/InvoiceTable.js"></script> *@
+    @* <script src="~/app-assets/js/app-user-list.js"></script> *@
+}
+
+
+<!--This is the modal-->
+<div class="offcanvas offcanvas-end" id="add-new-record">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title" id="exampleModalLabel">Assign Incharge</h5>
+        <button type="button"
+                class="btn-close text-reset"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body flex-grow-1">
+        <form class="add-new-record pt-0 row g-2" id="form-add-new-record" onsubmit="return false">
+            <input type="hidden" id="flag" name="flag" />
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="state" class="form-label">State:</label>
+                </div>
+                <div class=" ">
+                    <select class="form-select dt-state" id="state" name="state" aria-label="Select state" required>
+
+                        <option value="">Select State</option>
+
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="city" class="form-label">City:</label>
+                </div>
+                <div class=" ">
+                    <select class="form-select dt-city" id="city" name="city" aria-label="Select City" required>
+
+                        <option value="">Select City</option>
+
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="incharge" class="form-label">Incharge:</label>
+                </div>
+                <div class=" ">
+                    <select class="form-select dt-incharge" id="incharge" name="incharge" aria-label="Select Incharge" required>
+
+                        <option value="">Select Incharge</option>
+
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <button class="btn btn-danger m-2" data-bs-dismiss="offcanvas" id="btn-cancel" type="button">Cancel</button>
+                <button class="btn btn-primary m-2" id="btn-submit" type="button">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Tjis is the main portal;-->
+<div class="card">
+    <div class="card-datatable table-responsive">
+        <table class="datatables-schoolincharge table table-hover dt-table-striped">
+            <thead class="border-top bg-menu-theme text-white fw-2">
+                <tr>
+
+
+                    <th>State</th>
+                    <th>City</th>
+                    <th>Assigned Incharge</th>
+                    <th>Assigned Date</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<button type="button" class=" modal-weigh" style="display:none;" data-bs-toggle="modal" data-bs-target="#shareProject">
+    Show
+</button>
+<script>
+    var users, pcity, pstate;
+    function appendData () {
+        $.get("/Admin/GetData", { sr1: "I" }, function(response) {
+            //console.log(response);
+            var resp = JSON.parse(response);
+            // Parsing Each list to each Variable required
+            resp.forEach(function(item, index) {
+                    switch (index) {
+                        case 0:
+                            users = JSON.parse(item);
+                            break;
+                        case 1:
+                            pcity = JSON.parse(item);
+                            break;
+                        case 2:
+                            pstate = JSON.parse(item);
+                            break;
+                        
+                        default:
+                            // fallback if needed
+                    }
+
+            });
+            // console.log(pcity);
+            // console.log(pstate);
+            users.forEach(function (item) {
+                $('.dt-incharge').append(`<option value="${item.EMPID}">${item.ENAME}</option>`);
+            });
+            pstate.forEach(function (item) {
+                $('.dt-state').append(`<option value="${item.STATE_ID}">${item.STATE_NAME}</option>`);
+            });
+            // pcity.forEach(function (item) {
+            //     $('.dt-city').append(`<option value="${item.CITY_ID}">${item.CITY_NAME}</option>`);
+            // });
+            $('.dt-state').on('change', function() {
+                let selectedState = $(this).val();
+                // console.log(typeof selectedState);
+                // Filtering Values
+                let filteredCities = pcity.filter(c => c.STATECODE == selectedState);
+                // console.log(filteredCities);
+                $('.dt-city').empty().append('<option value="">Select City</option>');
+                // Appending City select input values
+                filteredCities.forEach(function(city) {
+                    $('.dt-city').append(`<option value="${city.CITY_ID}">${city.CITY_NAME}</option>`);
+                });
+            });
+            
+            //console.log("Received data:", response);
+            // Process the response (e.g., render to HTML)
+        });
+    }
+</script>
+<script>
+    var fv;
+    $(document).ready(function () {
+         fv = FormValidation.formValidation(document.getElementById('form-add-new-record'), {
+          fields: {
+            state: {
+              validators: {
+                notEmpty: {
+                  message: 'Zone is required.'
+                }
+              }
+            },
+            city: {
+              validators: {
+                notEmpty: {
+                  message: 'City is required.'
+                }
+              }
+            },
+            incharge: {
+              validators: {
+                notEmpty: {
+                  message: 'Incharge is required.'
+                }
+              }
+            }
+
+          },
+          plugins: {
+            trigger: new FormValidation.plugins.Trigger(),
+            bootstrap5: new FormValidation.plugins.Bootstrap5({
+              eleValidClass: '',
+              rowSelector: '.row'
+            }),
+            submitButton: new FormValidation.plugins.SubmitButton(),
+            autoFocus: new FormValidation.plugins.AutoFocus()
+          },
+          init: instance => {
+            instance.on('plugins.message.placed', function (e) {
+              if (e.element.parentElement.classList.contains('input-group')) {
+                e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+              }
+            });
+          }
+        });
+        //console.log(fv);
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        document.getElementById('btn-submit').addEventListener('click', function () {
+            //console.log(fv);
+            var btn = $(this);
+            fv.validate().then(function (status) {
+
+                if (status !== 'Valid') {
+
+                  // If valid, you can manually submit the form here
+                  return;
+                }
+                else{
+
+
+                    btn.prop('disabled', true);
+
+                    var obj = new Object();
+                    obj.flag = 'A';
+                   
+                    
+                    obj.incharge= $('.dt-incharge').val();
+                    
+                    obj.state= $('.dt-state').val();
+                    obj.city= $('.dt-city').val();
+                    
+
+                        $.post({
+                            url: '@Url.Action("AssignSchoolIncharge", "Admin")',
+                            data: { sr1: obj },
+                            success: function (resp) {
+                                btn.prop('disabled', false);
+                                if (resp.code > 0)
+                                 {
+                                     $('#add-new-record').offcanvas('toggle');
+                                     user_table.ajax.reload(null, false);
+                                     ToastWrapper.success(resp.message);
+                                 }else{
+                                     ToastWrapper.error(`Something went wrong!`);
+                                 }
+                                //console.log(resp);
+
+
+
+                            },
+                            error: function (xhr, status, error) {
+                                btn.prop('disabled', false);
+                                ToastWrapper.error("Something went wrong.")
+                            }
+                        });
+
+
+                }
+            });
+
+
+
+
+
+
+
+
+        });
+    })
+</script>

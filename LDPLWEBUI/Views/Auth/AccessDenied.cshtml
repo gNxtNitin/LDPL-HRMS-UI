@@ -1,0 +1,26 @@
+﻿@{
+    Layout = "_BlankLayout";
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="text-center p-5 shadow rounded-4 bg-light" style="max-width: 600px;">
+        <div class="mb-4">
+            <i class="bi bi-shield-lock-fill text-danger" style="font-size: 4rem;"></i>
+        </div>
+        <h1 class="text-danger mb-3">Access Denied</h1>
+        <p class="lead text-muted">
+            You do not have permission to view this page.<br />
+            Please contact your administrator if you believe this is an error.
+        </p>
+
+        <div class="mt-4 d-grid gap-2 d-md-flex justify-content-center">
+            <button onclick="history.back()" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Go Back
+            </button>
+            <a href="~/" class="btn btn-primary">
+                <i class="bi bi-house-fill"></i> Home
+            </a>
+        </div>
+    </div>
+</div>

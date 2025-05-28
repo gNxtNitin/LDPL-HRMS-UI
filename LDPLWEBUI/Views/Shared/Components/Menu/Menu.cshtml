@@ -1,0 +1,34 @@
+﻿@model List<UserManagementService.Models.MenuMaster>
+@{
+    var currentPath = ViewContext.HttpContext.Request.Path;
+}
+
+<ul class="menu-inner py-1">
+    @foreach (var menuItem in Model.Where(m =>  m.IsActive == "1"))
+    {
+        var isActive = currentPath.HasValue && currentPath.Value.StartsWith(menuItem.Url, StringComparison.InvariantCultureIgnoreCase);
+        // Get children and check if any child URL matches the current path
+       @*  var children = Model.Where(item => item.ParentId == menuItem.MenuId && item.IsActive == "1").OrderBy(x => x.Order).ToList();
+        var isActiveChild = children.Any(child => currentPath.HasValue && currentPath.Value.Equals(child.Url, StringComparison.InvariantCultureIgnoreCase)); *@
+
+        <li class="menu-item @(isActive ? "active" : "")">
+            <a asp-controller="@menuItem.ControllerName" asp-action="@menuItem.ActionName" class="menu-link">
+                <i class="menu-icon tf-icons @menuItem.IconClass"></i>
+                <div data-i18n="@menuItem.MenuName" class="ms-3">@menuItem.MenuName</div> 
+            </a>
+
+            @* 
+                <ul class="menu-sub">
+                   
+                        var isActive = currentPath.HasValue && currentPath.Value.Equals(child.Url, StringComparison.InvariantCultureIgnoreCase);
+                        <li class="menu-item @(isActive ? "active" : "")">
+                            <a href="@child.Url" class="menu-link">
+                                <div data-i18n="@child.MenuName">@child.MenuName</div>
+                            </a>
+                        </li>
+                   
+                </ul> *@
+          
+        </li>
+    }
+</ul>

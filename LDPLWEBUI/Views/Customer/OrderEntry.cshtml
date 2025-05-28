@@ -1,0 +1,532 @@
+﻿@{
+    Layout = "_DashboardLayout";
+}
+
+@section PageStyles {
+  
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+}
+
+
+@section PageScripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="~/js/ItemsDatatable.js"></script>
+    @* <script src="~/app-assets/js/app-user-list.js"></script> *@
+  
+}
+<style>
+    .quant-input {
+        border-radius: 5px;
+        border: 1px solid #b8b8b8 !important;
+       /*  background: #ffffff !important; */
+        padding: 5px;
+        width: 90px;
+    }
+
+    .show-quant {
+        border: 1px solid black !important;
+        background: grey !important;
+    }
+
+    .div-margin > div{
+        margin:10px 0 !important;
+    }
+
+    .form-label.required::after {
+        content: " *";
+        color: red;
+    }
+</style>
+
+
+<!-- Items List Table -->
+<div class="card" id="orderEntryCard">
+    
+    <div class="card-datatable table-responsive">
+        <div class="card-header d-flex justify-content-between pb-0">
+            <div class="head-label text-center">
+                <h5 class="card-title mb-0">Create Order</h5>
+            </div>
+            <div class="dt-action-buttons text-end pt-6 pt-md-0">
+                <div class="dt-buttons flex-wrap">
+                    <button id="customExportExcel" class="btn me-2 mb-2 bg-menu-theme text-white">
+                        <span class="spinner-border spinner-border-sm d-none" id="exportSpinner" role="status" aria-hidden="true"></span>
+                        <span id="exportText">Export to Excel</span>
+                    </button>
+                   
+                    <input type="file" id="excelFile" accept=".xlsx" class="d-none">
+                    <label for="excelFile" class="btn btn-secondary mb-2">
+                        <i class="bi bi-upload"></i> Import from Excel
+                    </label>
+                </div>
+            </div>
+        </div>
+        @*  <div class="my-2">
+
+            <div id="customToolbar" class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                <div>
+                    <button id="customExportExcel" class="btn btn-success me-2 mb-2">
+                        <span class="spinner-border spinner-border-sm d-none" id="exportSpinner" role="status" aria-hidden="true"></span>
+                        <span id="exportText">Export to Excel</span>
+                    </button>
+
+                     <input type="file" id="excelFile" accept=".xlsx" class="d-none">
+                    <label for="excelFile" class="btn btn-secondary mb-2">
+                        <i class="bi bi-upload"></i> Import from Excel
+                    </label> 
+                </div>
+            </div>
+        </div>  *@
+        <table class="datatables-items table table-hover dt-table-striped">
+            <thead class="border-top bg-menu-theme text-white fw-2">
+                <tr>
+                    
+                    <th>Title Code</th>
+                    <th>Title Name</th>
+                    <th>Category</th>
+                    <th>SubCode</th>
+                    <th>Sub Category</th>
+                    <th>UOM</th>
+                    <th>MRP</th>
+                    <th>Quantity</th>
+                   
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="form-fillout">
+        <form id="formAddNewRecord">
+            <div class="row my-2 p-2 mx-0">
+                <div class="col-4">
+                    <div class=" text-right">
+                        <label for="shipTo" class="form-label required">Ship To:</label>
+                    </div>
+                    <div class=" ">
+                        <input type="text" class="form-control" id="shipTo" name="shipTo" placeholder="Enter ship to" maxlength="60">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="text-right">
+                        <label for="shipToAdd" class="form-label required">Ship To Address:</label>
+                    </div>
+                    <div class="">
+                        <input type="text" class="form-control" id="shipToAdd" name="shipToAdd" placeholder="Enter ship to Address" maxlength="100">
+                    </div>
+                </div> 
+                <div class="col-4">
+                    <div class="text-right">
+                        <label for="transportName" class="form-label required">Transport Name:</label>
+                    </div>
+                    <div class="">
+                        <input type="text" class="form-control" id="transportName" name="transportName" placeholder="Enter Transport Name" maxlength="60">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="text-right">
+                        <label for="bookingStation" class="form-label required">Booking Station:</label>
+                    </div>
+                    <div class="">
+                        <input type="text" class="form-control" id="bookingStation" name="bookingStation" placeholder="Enter Booking station" maxlength="60">
+                    </div>
+                </div> 
+                <div class="col-4">
+                    <div class="text-right">
+                        <label for="poNo" class="form-label required">PO No.:</label>
+                    </div>
+                    <div class="">
+                        <input type="text" class="form-control" id="poNo" name="poNo" placeholder="Enter PO Number" maxlength="20">
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="text-right">
+                        <label for="schoolName" class="form-label required">School Name:</label>
+                    </div>
+                    <div class="">
+                        <input type="text" class="form-control" id="schoolName" name="schoolName" placeholder="Enter school name" maxlength="60">
+                    </div>
+                </div> 
+            <div class="col-4">
+                <div class="text-right">
+                        <label for="CustomerId" class="form-label required">Upload File:</label>
+                </div>
+                <div class="">
+                        <input type="file" class="form-control" name="file" id="fileInput" accept=".jpg, .jpeg, .png, .pdf"/>
+                        <small class="text-muted my-2">Maximum Upload size is 5MB</small>
+                   
+                </div>
+                    @* <div id="message" style="margin-top: 20px;"></div> *@
+            </div>
+            
+        </div> 
+        </form>
+        <div class="row my-2 mx-0">
+            <div class="d-flex gap-2 justify-content-end">
+                <button class="btn btn-danger m-2" id="btn-cancel" type="button">Cancel</button>
+                <button class="btn btn-primary m-2" id="btn-submit" type="button">Submit</button>
+            </div>
+        </div>
+        
+        @* <div class="row my-2 p-2">
+
+        <div class="col-6">
+            <div class="col-3 text-right">
+                <label for="CustomerId" class="form-label">Ship To:</label>
+            </div>
+            <div class="col-9">
+                    <input type="text" class="form-control" id="shipTo" name="CustomerId" placeholder="Enter ship to" required>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="col-3 text-right">
+                <label for="CustomerId" class="form-label">Ship To Address:</label>
+            </div>
+            <div class="col-9">
+                    <input type="text" class="form-control" id="shipToAdd" name="CustomerId" placeholder="Enter ship to Address" required>
+            </div>
+        </div>
+        </div>
+        <div class="row my-2 p-2">
+        <div class="col-6">
+            <div class="col-3 text-right">
+                <label for="CustomerId" class="form-label">Transport Name:</label>
+            </div>
+            <div class="col-9">
+                    <input type="text" class="form-control" id="transportName" name="CustomerId" placeholder="Enter Transport Number" required>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="col-3 text-right">
+                <label for="CustomerId" class="form-label">Booking Station:</label>
+            </div>
+            <div class="col-9">
+                    <input type="text" class="form-control" id="bookingStation" name="CustomerId" placeholder="Enter Booking station" required>
+            </div>
+        </div>
+        </div>
+        <div class="row my-2 p-2">
+        <div class="col-6">
+            <div class="col-3 text-right">
+                <label for="CustomerId" class="form-label">PO No.:</label>
+            </div>
+            <div class="col-9">
+
+                    <input type="text" class="form-control" id="poNo" name="CustomerId" placeholder="Enter PO Number" required>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="col-3 text-right">
+                <label for="CustomerId" class="form-label">School Name:</label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control" id="schoolName" name="CustomerId" placeholder="Enter school name" required>
+            </div>
+        </div>
+        </div>
+        <div class="row my-2 p-2">
+            <div class="col-6">
+                <div class="col-3 text-right">
+                    <label for="CustomerId" class="form-label">Upload File:</label>
+                </div>
+                <div class="col-9">
+                    <input type="file" name="file" id="fileInput" accept=".jpg, .jpeg, .png, .pdf, .doc, .docx" required/>
+                    
+                   
+                </div>
+            </div>
+            
+        </div> *@
+       @*  <div class="row my-2 d-flex justify-content-end">
+            <div class="col-2 m-3">
+            <button class="btn btn-primary d-grid" id="btn-submit" type="button">Submit</button>
+            </div>
+            
+        </div> *@
+    </div>
+</div>
+
+
+<script>
+    var validationLogic = true ;
+    const maxFileSize = 5 * 1024 * 1024; // 5 MB
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    $(document).ready(function () {
+        
+        
+        $('#fileInput').on('change', function () {
+            fv.validateField('file');
+            // const file = this.files[0];
+            // if (file.size > maxFileSize) {
+            //     $('#message').html('<span style="color:red;">File size must be less than 5MB.</span>');
+            //     //return;
+            // }
+            // else{
+            //     $('#message').html('');
+            // }
+
+            // // File type validation
+            // if (!allowedTypes.includes(file.type)) {
+            //     $('#message').html('<span style="color:red;">Invalid file type. Only JPG, PNG, PDF allowed.</span>');
+            //     //return;
+            // }
+            // else {
+            //     $('#message').html('');
+            // }
+            
+        });
+
+        document.getElementById('btn-submit').addEventListener('click', function () {
+            var btn = $(this);
+            fv.validate().then(function (status) {
+                
+                if (status !== 'Valid') {
+                    
+                    
+                  // If valid, you can manually submit the form here
+                  return;
+                }
+                else{
+                    var itemList = [];
+                    items_table.rows().every(function () {
+                        var row = $(this.node());
+
+                        var itemCode = row.find('td').eq(0).text();
+                        var quantity = row.find('td').eq(-1).find('input').val();
+
+                        if (quantity !== "" && !isNaN(quantity) && parseInt(quantity) > 0) {
+                            itemList.push({
+                                ITEM_CODE: itemCode,
+                                ITEM_QTY: quantity
+                            });
+                        }
+                    });
+                    
+                    if (itemList.length === 0) {
+                        ToastWrapper.error("Please enter quantity for atleast one item to place order.");
+                        // If valid, you can manually submit the form here
+                        return;
+                      }
+                    btn.prop('disabled', true);
+                    var fileInput = $('#fileInput')[0];
+                    var file = fileInput.files[0];
+
+
+                    const reader = new FileReader();
+
+                    reader.onload = function () {
+                        const base64 = reader.result.split(',')[1]; // Remove data prefix
+
+
+                        // Call function to POST after payload is ready
+
+
+
+                        var shippingInfo = {
+                            ShipToParty: $('#shipTo').val().trim(),
+                            ShipToAddress: $('#shipToAdd').val().trim(),
+                            TransporterName: $('#transportName').val().trim(),
+                            BookingStation: $('#bookingStation').val().trim(),
+                            CustomerPoNo: $('#poNo').val().trim(),
+                            SchoolName: $('#schoolName').val().trim(),
+                            AttachFile: base64,
+                            ContentType: file.name,
+                            FileName: file.type,
+                            Items: itemList
+                        };
+
+                        $.post({
+                            url: '@Url.Action("CreateOrder", "Customer")',
+                            data: { sr1: JSON.stringify(shippingInfo) },
+                            success: function (resp) {
+                                btn.prop('disabled', false);
+                                window.location.href = "/Customer/Orders";
+
+
+                            },
+                            error: function (xhr, status, error) {
+                                btn.prop('disabled', false);
+                                ToastWrapper.error("Something went wrong.")
+                            }
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            
+
+            
+        
+           
+
+
+        });
+
+        //console.log(table_data);
+       // document.getElementById('btn-submit').addEventListener('click', function () {
+           
+       //     var itemList = [];
+       //     console.log(items_table);
+       //     $('.datatables-users tbody tr').each(function () {
+       //          var tds = $(this).find('td');
+       //          var itemCode = $(tds[0]).text().trim();
+       //          var quantity = $(tds[4]).find('input').val().trim();
+
+       //         if (quantity !== "" && !isNaN(quantity) && parseFloat(quantity) > 0) {
+       //             itemList.push({
+       //                 ITEM_CODE: itemCode,
+       //                 ITEM_QTY: quantity
+       //             });
+       //         }
+       //     });
+       //     var shippingInfo = {
+       //         ShipToParty: $('#shipTo').val().trim(),
+       //         ShipToAddress: $('#shipToAdd').val().trim(),
+       //         TransporterName: $('#transportName').val().trim(),
+       //         BookingStation: $('#bookingStation').val().trim(),
+       //         CustomerPoNo: $('#poNo').val().trim(),
+       //         SchoolName: $('#schoolName').val().trim(),
+       //         Items: itemList
+       //     };
+
+       //     $.post({
+       //          url: '@Url.Action("CreateOrder", "Customer")',
+       //          data: { sr1 : JSON.stringify(shippingInfo) },
+       //          success: function (resp) {
+       //             alert(1);
+
+
+       //          },
+       //          error: function (xhr, status, error) {
+       //            alert(2);
+       //          }
+       //      });
+
+
+       // });
+    })
+</script>
+
+<script>
+
+    window.addEventListener("pageshow", function (event) {
+        var historyTraversal = event.persisted ||
+            (typeof window.performance != "undefined" &&
+                window.performance.navigation.type === 2);
+        if (historyTraversal) {
+            
+            window.location.reload();
+        }
+    });
+
+    var fv;
+    $(document).ready(function () {
+      fv = FormValidation.formValidation(document.getElementById('formAddNewRecord'), {
+      fields: {
+        shipTo: {
+          validators: {
+            notEmpty: {
+              message: 'Ship To is required'
+            }
+          }
+        },
+        shipToAdd: {
+          validators: {
+            notEmpty: {
+              message: 'Ship To Address is required'
+            }
+          }
+        },
+        transportName: {
+          validators: {
+            notEmpty: {
+              message: 'Transport Name is required'
+            }
+          }
+        },
+        bookingStation: {
+          validators: {
+            notEmpty: {
+              message: 'Booking Station is required'
+            }
+          }
+        },
+        poNo: {
+          validators: {
+            notEmpty: {
+              message: 'PO No. is required'
+            }
+          }
+        },
+        schoolName: {
+          validators: {
+            notEmpty: {
+              message: 'School Name is required'
+            }
+          }
+        },
+        file: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select a file'
+                    },
+                    file: {
+                        extension: 'pdf,jpg,jpeg,png',
+                        type: 'application/pdf,image/jpeg,image/png',
+                        maxSize: 5 * 1024 * 1024, // 5 MB in bytes
+                        message: 'The selected file is not valid. Allowed types: PDF, DOC, DOCX, JPG, JPEG, PNG and size must be under 5MB'
+                    }
+                }
+            }
+            // file: {
+            //   validators: {
+            //     notEmpty: {
+            //       message: 'File is Required'
+            //     }
+            //   }
+            // },
+      },
+      plugins: {
+        trigger: new FormValidation.plugins.Trigger(),
+        bootstrap5: new FormValidation.plugins.Bootstrap5({
+          eleValidClass: '',
+          rowSelector: '.row'
+        }),
+        submitButton: new FormValidation.plugins.SubmitButton(),
+        autoFocus: new FormValidation.plugins.AutoFocus()
+      },
+      init: instance => {
+        instance.on('plugins.message.placed', function (e) {
+          if (e.element.parentElement.classList.contains('input-group')) {
+            e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+          }
+        });
+      }
+    });
+
+
+    //cancel button
+    $("#btn-cancel").on("click", () => {
+        Swal.fire({
+            text: 'Are you sure you would like to cancel and leave this page?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            customClass: {
+                confirmButton: 'btn btn-primary me-2 waves-effect waves-light',
+                cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+               window.location= "/customer/orders";
+            }
+        });
+    });
+
+})
+</script>
