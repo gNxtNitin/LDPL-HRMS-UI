@@ -57,8 +57,8 @@
 
                         <form id="loginForm" class="mb-4" asp-asp-controller="Auth" asp-action="Login" method="POST" asp-antiforgery="true">
                             <div class="mb-6">
-                                <label for="EmailId" class="form-label">Employee ID</label>
-                                <input type="text" class="form-control" id="emailOrPhone" name="EmpCode" asp-for="EmpCode" placeholder="Enter your Employee ID" autofocus>
+                                <label for="EmpCode" class="form-label">Email ID</label>
+                                <input type="text" class="form-control" id="emailOrPhone" name="EmpCode" asp-for="EmpCode" placeholder="Enter your Cutomer ID" autofocus>
                                 <span asp-validation-for="EmpCode" class="text-danger"></span>
                             </div>
                             <div class="mb-6 form-password-toggle">
@@ -69,6 +69,7 @@
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
                             </div>
+
 
                             <div class="mb-6 captcha-container">
                                 <!-- dynamic captcha rendering -->
