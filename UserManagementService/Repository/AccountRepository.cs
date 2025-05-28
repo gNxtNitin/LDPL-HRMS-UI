@@ -58,6 +58,7 @@ namespace UserManagementService.Repository
                 return new LoginStatus
                 {
                     //CompanyName = companyName,
+                    RespCode= respBody.Code,
                     EmpId = empId,
                     Role = role,
                     UserName = uname,

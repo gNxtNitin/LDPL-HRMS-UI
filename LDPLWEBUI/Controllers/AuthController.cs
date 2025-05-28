@@ -132,27 +132,35 @@ namespace LDPLWEBUI.Controllers
                     // TODO - Change token handling (do not store in the session)
                     //HttpContext.Session.SetString("user_token", loginStatus.Token);
                     //HttpContext.Session.SetInt32("userId", loginStatus.UserId);
-                    switch (role)
+                    if (loginStatus.RespCode == 201)
                     {
-                        case "ADMIN":
-                            // Code block
-                            return RedirectToAction("Dashboard", "Admin");
-                        //break;
-
-                        case "USER":
-                            // Code block
-                            return RedirectToAction("MyPunchingReport", "Report");
-                        case "HOD":
-                            // Code block
-                            return RedirectToAction("MyPunchingReport", "Report");
-                        case "INCHARGE":
-                            // Code block
-                            return RedirectToAction("MyPunchingReport", "Report");
-                        default:
-                            // Code block
-                            return RedirectToAction("LoginAdmin", "Auth");
+                        return RedirectToAction("ResetPassword", "Auth");
                     }
+                    else
+                    {
 
+
+                        switch (role)
+                        {
+                            case "ADMIN":
+                                // Code block
+                                return RedirectToAction("Dashboard", "Admin");
+                            //break;
+
+                            case "USER":
+                                // Code block
+                                return RedirectToAction("MyPunchingReport", "Report");
+                            case "HOD":
+                                // Code block
+                                return RedirectToAction("MyPunchingReport", "Report");
+                            case "INCHARGE":
+                                // Code block
+                                return RedirectToAction("MyPunchingReport", "Report");
+                            default:
+                                // Code block
+                                return RedirectToAction("LoginAdmin", "Auth");
+                        }
+                    }
                     //return role.Equals("C", StringComparison.InvariantCultureIgnoreCase) ? RedirectToAction("Index", "Customer") : RedirectToAction("Dashboard", role, new { area = role });
                 }
                 else
