@@ -277,7 +277,7 @@ namespace UserManagementService.Repository
             bool isResetSuccessfull = false;
             LoginRequest loginRequestModel = new LoginRequest()
             {
-                MobileOrEmail = string.Empty,
+                MobileOrEmail = userId,
                 Password = password,
                 IsJwtToken = false,
                 IsLoginWithOtp = false,
