@@ -84,7 +84,7 @@ namespace LDPLWEBUI.Controllers
                 };
 
                 LoginStatus loginStatus = await _accountRepository.LoginUser(loginRequest);
-                
+
                 if (loginStatus.Success)
                 {
 
@@ -135,7 +135,7 @@ namespace LDPLWEBUI.Controllers
                     //HttpContext.Session.SetInt32("userId", loginStatus.UserId);
                     if (loginStatus.RespCode == 201)
                     {
-                        return RedirectToAction("ResetPassword", "Auth");
+                        return RedirectToAction("ChangePassword", "Auth");
                     }
                     else
                     {
@@ -187,11 +187,7 @@ namespace LDPLWEBUI.Controllers
         //}
         public async Task<IActionResult> ResetPassword(string? authResetToken)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                return View(new ResetPasswordViewModel { UserId = HttpContext.User.FindFirst("EmpId")?.Value });
-            }
-            else if (string.IsNullOrEmpty(authResetToken))
+            if (string.IsNullOrEmpty(authResetToken))
             {
                 TempData["ForgotPasswordRequestError"] = "Reset Password Url Is Invalid/Expired";
                 RedirectToAction("Login");
@@ -230,8 +226,30 @@ namespace LDPLWEBUI.Controllers
         {
             return View();
         }
+        public IActionResult ChangePassword()
+        {
+            ViewBag.ErCode = TempData["CPasswordCode"] as string;
+            ViewBag.ErMsg = TempData["CPasswordMsg"] as string;
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(string userId, string password)
+        {
+            bool res = await _accountRepository.UpdatePassword(userId, password);
+            if (res)
+            {
+                TempData["CPasswordCode"] = "1";
+                TempData["CPasswordMsg"] = "Password updated Successfully!";
+            }
+            else
+            {
+                TempData["CPasswordCode"] = "0";
+                TempData["CPasswordMsg"] = "Password update failed";
+            }
 
 
+            return RedirectToAction("ChangePassword");
+        }
         [HttpPost]
         public async Task<JsonResult> ForgotPassword(string email)
         {
