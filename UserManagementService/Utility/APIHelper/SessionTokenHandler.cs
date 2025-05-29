@@ -18,10 +18,14 @@ namespace UserManagementService.Utility.APIHelper
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            string token = _httpContextAccessor.HttpContext.Request.Cookies["user_token"];
+            string empId = _httpContextAccessor.HttpContext.User.FindFirst("EmpId")?.Value;
+         
+            string token = _httpContextAccessor.HttpContext.Request.Cookies[$"t_{empId}"];
+
 
             if (!string.IsNullOrEmpty(token))
             {
+                token = EncDecHelper.Decrypt(token);
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             }
 

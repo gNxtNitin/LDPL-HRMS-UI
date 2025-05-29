@@ -99,7 +99,7 @@
                 <div class="app-brand demo">
                     <a asp-action="Index" asp-controller="Home" asp-area="" class="app-brand-link">
                         <span class="app-brand-logo demo">
-                           <img src="~/static/logo3.png" alt="LDPL Logo" class="img-fluid img-thumbnail">
+                           <img src="~/static/logo.png" alt="LDPL Logo" class="img-fluid img-thumbnail">
                         </span>
                         <span class="app-brand-text demo menu-text fw-bold text-white me-0">
                              LDPL
@@ -133,9 +133,7 @@
 
                         <div class="navbar-nav align-items-center">
                             <div class="nav-item navbar-search-wrapper mb-0">
-                                <span class="card-title mb-0">
-                                    <b>@(User.FindFirst("CustomerType")?.Value == "C" ? User.FindFirst("CompanyName")?.Value : "Mobile Admin Portal")</b>
-                                </span>
+                              
                             </div>
                         </div>
 
@@ -229,11 +227,12 @@
                                     <li>
                                         <div class="dropdown-divider my-1 mx-n2"></div>
                                     </li>
-                                   @*  <li>
-                                        <a class="dropdown-item" asp-action="Profile" asp-controller="User" asp-area="">
-                                            <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
+                                   <li>
+                                        <a class="dropdown-item" asp-action="ChangePassword" asp-controller="Auth" asp-area="">
+                                            <i class="ti ti-key me-3 ti-md"></i><span class="align-middle">Change Password</span>
                                         </a>
                                     </li>
+                                    @*  
                                     <li>
                                         <a class="dropdown-item" href="#">
                                             <i class="ti ti-settings me-3 ti-md"></i><span class="align-middle">Settings</span>

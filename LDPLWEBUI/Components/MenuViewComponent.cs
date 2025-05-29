@@ -17,17 +17,16 @@ namespace LDPLWEBUI.Components
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-
-
-            string userMenu = HttpContext.Session.GetString("UserMenu");
+            string userId = HttpContext.User.FindFirst("UserId")?.Value;
+            
+            string userMenu = HttpContext.Session.GetString($"UserMenu_{userId}");
 
             if (userMenu == null || userMenu == "[]")
             {
             //var tt = HttpContext.User.Claims.Where(x => x == ClaimTypes.NameIdentifier).FirstOrDefault();
 
-                string userId = HttpContext.User.FindFirst("UserId")?.Value;
                 var menuRes = await _menuRepository.GetMenuByUserId(userId);
-                HttpContext.Session.SetString("UserMenu", JsonSerializer.Serialize(menuRes));
+                HttpContext.Session.SetString($"UserMenu_{userId}", JsonSerializer.Serialize(menuRes));
                 return View("Menu", menuRes);
             }
 

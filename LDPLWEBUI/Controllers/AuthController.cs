@@ -8,6 +8,7 @@ using UserManagementService.IRepository;
 using UserManagementService.Models;
 using UserManagementService.Utility;
 using LDPLWEBUI.Utility;
+using System.Text;
 
 namespace LDPLWEBUI.Controllers
 {
@@ -129,7 +130,9 @@ namespace LDPLWEBUI.Controllers
 
                     //HttpContext.Session.SetString("UserName", loginStatus.UserName);
                     // HttpContext.Session.SetString("CompanyName", loginStatus.CompanyName);
-                    HttpContext.Response.Cookies.Append("user_token", loginStatus.Token, tokenCookieOptions);
+                   
+                   
+                    HttpContext.Response.Cookies.Append($"t_{loginStatus.EmpId}", EncDecHelper.Encrypt(loginStatus.Token), tokenCookieOptions);
                     // TODO - Change token handling (do not store in the session)
                     //HttpContext.Session.SetString("user_token", loginStatus.Token);
                     //HttpContext.Session.SetInt32("userId", loginStatus.UserId);
@@ -198,7 +201,7 @@ namespace LDPLWEBUI.Controllers
 
             if (isRequestValid && !string.IsNullOrEmpty(userId))
             {
-                return View(new ResetPasswordViewModel { UserId = userId });
+                return View(new ResetPasswordViewModel { UserId = EncDecHelper.Encrypt(userId) });
             }
 
             //toast message on login page
@@ -211,6 +214,7 @@ namespace LDPLWEBUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetUserPasswordData)
         {
+            resetUserPasswordData.UserId = EncDecHelper.Decrypt(resetUserPasswordData.UserId);
             bool isResetSuccess = await _accountRepository.ResetPassword(resetUserPasswordData.UserId, resetUserPasswordData.Password);
             if (isResetSuccess)
             {
@@ -250,6 +254,7 @@ namespace LDPLWEBUI.Controllers
 
             return RedirectToAction("ChangePassword");
         }
+
         [HttpPost]
         public async Task<JsonResult> ForgotPassword(string email)
         {
@@ -270,8 +275,10 @@ namespace LDPLWEBUI.Controllers
 
         public async Task<IActionResult> Logout()
         {
+            string empId = HttpContext.User.FindFirst("EmpId")?.Value;
+           
             HttpContext.Session.Clear();
-            Response.Cookies.Delete("user_token");
+            Response.Cookies.Delete($"t_{empId}");
             await HttpContext.SignOutAsync("CookieAuth");
             return RedirectToAction("Index", "Home");
 
