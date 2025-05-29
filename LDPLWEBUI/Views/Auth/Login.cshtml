@@ -52,13 +52,12 @@
                             </a>
                         </div>
                         <!-- Logo -->
-                        <h4 class="mb-1">Admin Portal</h4>
-                        <p class="mb-6">Please sign-in to your account</p>
+                        <p class="my-4">Please sign-in to your account</p>
 
                         <form id="loginForm" class="mb-4" asp-asp-controller="Auth" asp-action="Login" method="POST" asp-antiforgery="true">
                             <div class="mb-6">
-                                <label for="EmpCode" class="form-label">Email ID</label>
-                                <input type="text" class="form-control" id="emailOrPhone" name="EmpCode" asp-for="EmpCode" placeholder="Enter your Cutomer ID" autofocus>
+                                <label for="EmpCode" class="form-label">Employee ID</label>
+                                <input type="text" class="form-control" id="EmpCode" name="EmpCode" asp-for="EmpCode" placeholder="Enter your Employee ID" autofocus>
                                 <span asp-validation-for="EmpCode" class="text-danger"></span>
                             </div>
                             <div class="mb-6 form-password-toggle">
@@ -70,6 +69,19 @@
                                 </div>
                             </div>
 
+                            <div class="my-8">
+                                <div class="d-flex justify-content-between">
+                                    <div class="form-check mb-0 ms-2">
+                                        <input class="form-check-input" type="checkbox" id="remember-me" asp-for="IsRememberMe">
+                                        <label class="form-check-label" for="remember-me">
+                                            Remember Me
+                                        </label>
+                                    </div>
+                                    <a asp-asp-controller="Auth" asp-action="ForgotPassword" asp-controller="Auth">
+                                        <p class="mb-0">Forgot Password?</p>
+                                    </a>
+                                </div>
+                            </div>
 
                             <div class="mb-6 captcha-container">
                                 <!-- dynamic captcha rendering -->

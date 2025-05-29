@@ -237,12 +237,13 @@ namespace LDPLWEBUI.Controllers
         {
             if (string.IsNullOrEmpty(email.Trim()))
             {
-                return new JsonResult(new { IsSent = false });
+                return new JsonResult(new { Status = -400 });
             }
 
-            bool isEmailSent = await _accountRepository.SendForgotPasswordEmail(email);
+            int emailSentStatus = await _accountRepository.SendForgotPasswordEmail(email);
 
-            return new JsonResult(new { IsSent = isEmailSent });
+            
+            return new JsonResult(new { Status = emailSentStatus });
         }
         public IActionResult Index()
         {

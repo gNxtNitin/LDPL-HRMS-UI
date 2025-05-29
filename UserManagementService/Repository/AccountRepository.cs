@@ -296,7 +296,7 @@ namespace UserManagementService.Repository
             return isResetSuccessfull;
         }
 
-        public async Task<bool> SendForgotPasswordEmail(string email)
+        public async Task<int> SendForgotPasswordEmail(string email)
         {
             LoginRequest loginRequestModel = new LoginRequest
             {
@@ -311,12 +311,7 @@ namespace UserManagementService.Repository
 
             APIResponse respBody = await _apiClientHelper.PostAsync<LoginRequest, APIResponse>("/api/PasswordManagement/ForgotPassword", loginRequestModel);
 
-            if (respBody.Code > 0)
-            {
-                return true;
-            }
-
-            return false;
+            return respBody.Code;
         }
 
         public async Task<bool> UpdatePassword(string userId, string password)

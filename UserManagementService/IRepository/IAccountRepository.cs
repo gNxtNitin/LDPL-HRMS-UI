@@ -17,7 +17,7 @@ namespace UserManagementService.IRepository
 
         Task<bool> IsOTPRequestValid(string uid);
 
-        Task<bool> SendForgotPasswordEmail(string email);
+        Task<int> SendForgotPasswordEmail(string email);
         Task<(bool, string)> ResetPasswordUrlValidate(string code);
 
         Task<bool> ResetPassword(string email, string password);
