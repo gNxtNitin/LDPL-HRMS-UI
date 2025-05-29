@@ -316,26 +316,26 @@ namespace UserManagementService.Repository
 
         public async Task<bool> UpdatePassword(string userId, string password)
         {
-            APIResponse resp = await _apiClientHelper.GetAsync<APIResponse>($"/api/Account/GetUser?userId={userId}");
+            //APIResponse resp = await _apiClientHelper.GetAsync<APIResponse>($"/api/Account/GetUser?userId={userId}");
             bool isResetSuccessfull = false;
 
 
-            if (resp.Code > 0)
-            {
-                var jsonData = JsonSerializer.Deserialize<JsonElement>(resp.Data.ToString());
+            //if (resp.Code > 0)
+            //{
+                //var jsonData = JsonSerializer.Deserialize<JsonElement>(resp.Data.ToString());
 
-                if (jsonData.TryGetProperty("Users", out var usersJson) && usersJson.GetArrayLength() > 0)
-                {
-                    var userInfo = JsonSerializer.Deserialize<AddUpdateUserRequest>(usersJson[0].GetRawText());
+                //if (jsonData.TryGetProperty("Users", out var usersJson) && usersJson.GetArrayLength() > 0)
+                //{
+                //    var userInfo = JsonSerializer.Deserialize<AddUpdateUserRequest>(usersJson[0].GetRawText());
 
                     LoginRequest pwUpdateReq = new LoginRequest()
                     {
-                        MobileOrEmail = userInfo.Email,
+                        MobileOrEmail = userId,
                         Password = password,
                         IsJwtToken = false,
                         IsLoginWithOtp = false,
                         IsResendCode = 0,
-                        UserId = string.Empty,
+                        UserId = userId,
                         VerificationCode = string.Empty
                     };
 
@@ -349,8 +349,8 @@ namespace UserManagementService.Repository
                     }
 
 
-                }
-            }
+                //}
+            //}
 
             return isResetSuccessfull;
         }
