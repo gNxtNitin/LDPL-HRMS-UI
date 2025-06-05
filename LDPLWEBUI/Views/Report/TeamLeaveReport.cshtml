@@ -1,0 +1,63 @@
+﻿@{
+    Layout = "_DashboardLayout";
+    ViewBag.Title = "Team DA Report";
+}
+
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link href="~/app-assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+}
+
+
+@section PageScripts
+{
+    <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.min.js"></script>
+    <script src="~/js/reports/team-leave-report-datatable.js"></script>
+
+}
+
+
+
+
+<div class="card">
+
+    <div class="card-datatable table-responsive">
+        <table class="datatables-dareport table table-hover dt-table-striped">
+            <thead class="border-top bg-menu-theme text-white fw-2">
+                <tr>
+                    <th>
+                        <div class="form-check d-none d-flex align-items-center justify-content-center" id="select-all">
+                            <input class="form-check-input custom-checkbox" type="checkbox" name="select-all-rows" id="select-all-rows" title="Select/Deselect all rows">
+                        </div>
+                    </th>
+                    <th>DA DATE</th>
+                    <th>EMP ID</th>
+                    <th>EMP NAME</th>
+                    <th>DA</th>
+                    <th>HOTEL</th>
+                    <th>OTHERS</th>
+                    <th>KM</th>
+                    <th>DA STATUS</th>
+                    <th>FROM DATE</th>
+                    <th>TO DATE</th>
+                    <th>APPROVAL</th>
+                    <th>BILLS</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+

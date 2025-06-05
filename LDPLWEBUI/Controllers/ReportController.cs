@@ -43,6 +43,17 @@ namespace LDPLWEBUI.Controllers
             return View();
         }
 
+        public async Task<IActionResult> MyLeaveReport()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> TeamLeaveReport()
+        {
+            return View();
+        }
+
+
 
         public async Task<IActionResult> DAEntry()
         {

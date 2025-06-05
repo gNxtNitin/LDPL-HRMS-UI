@@ -268,10 +268,7 @@ namespace LDPLWEBUI.Controllers
             
             return new JsonResult(new { Status = emailSentStatus });
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+      
 
         public async Task<IActionResult> Logout()
         {
