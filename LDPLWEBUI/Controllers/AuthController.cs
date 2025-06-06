@@ -1,14 +1,15 @@
-﻿using System.Security.Claims;
+﻿using LDPLWEBUI.Models;
+using LDPLWEBUI.Utility;
+using LDPLWEBUI.Utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using LDPLWEBUI.Models;
-using LDPLWEBUI.Utility;
+using System.Security.Claims;
+using System.Text;
+using System.Text.RegularExpressions;
 using UserManagementService.DTOs.RequestModels;
 using UserManagementService.IRepository;
 using UserManagementService.Models;
 using UserManagementService.Utility;
-using LDPLWEBUI.Utility;
-using System.Text;
 
 namespace LDPLWEBUI.Controllers
 {
@@ -25,7 +26,14 @@ namespace LDPLWEBUI.Controllers
             _customerRepository = customerRepository;
         }
 
+        public bool IsValidPassword(string password)
+        {
+            if (string.IsNullOrEmpty(password))
+                return false;
 
+            string pattern = @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]).{8,}$";
+            return Regex.IsMatch(password, pattern);
+        }
         public async Task<IActionResult> LogIn()
         {
             //if (User.Identity?.IsAuthenticated == true)
@@ -214,6 +222,11 @@ namespace LDPLWEBUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetUserPasswordData)
         {
+            if (!ModelState.IsValid)
+            {
+                // Validation failed – return view with errors
+                return View(resetUserPasswordData);
+            }
             resetUserPasswordData.UserId = EncDecHelper.Decrypt(resetUserPasswordData.UserId);
             bool isResetSuccess = await _accountRepository.ResetPassword(resetUserPasswordData.UserId, resetUserPasswordData.Password);
             if (isResetSuccess)
@@ -239,6 +252,13 @@ namespace LDPLWEBUI.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdatePassword(string userId, string password)
         {
+            if (string.IsNullOrEmpty(password) || !IsValidPassword(password))
+            {
+                TempData["CPasswordCode"] = "0";
+                TempData["CPasswordMsg"] = "Invalid Password";
+                return RedirectToAction("ChangePassword");
+                //return new JsonResult(new { code = -1, message = "Invalid Password. Password must be at least 8 characters long and contain at least one letter, one number, and one special character." });
+            }
             bool res = await _accountRepository.UpdatePassword(userId, password);
             if (res)
             {
@@ -263,10 +283,10 @@ namespace LDPLWEBUI.Controllers
                 return new JsonResult(new { Status = -400 });
             }
 
-            int emailSentStatus = await _accountRepository.SendForgotPasswordEmail(email);
+            EmailStatus emailSentStatus = await _accountRepository.SendForgotPasswordEmail(email);
 
             
-            return new JsonResult(new { Status = emailSentStatus });
+            return new JsonResult(emailSentStatus);
         }
       
 

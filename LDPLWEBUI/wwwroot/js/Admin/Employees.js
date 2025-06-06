@@ -23,21 +23,26 @@ $(document).ready(function () {
             dataSrc: ''
         },
         columns: [
-
+            { data: 'id', title: 'ID' },
             { data: 'empId', title: 'EMP ID' },
             { data: 'eName', title: 'Name' },
+
+            { data: 'designation', title: 'Designation ID' },
             { data: 'designation', title: 'Designation' },
             { data: 'mobile', title: 'Mobile' },
             { data: 'email', title: 'Email' },
-            { data: 'user_role_id', title: 'Role' },
-            { data: 'department', title: 'Zone' }, // No matching model property — handle accordingly
+
+            { data: 'user_role_id', title: 'Role ID' },
+            { data: 'rolename', title: 'Role' },
+
+            //{ data: 'departmentid', title: 'Zone ID' },
+            //{ data: 'department', title: 'Zone' },
+
+            { data: 'accountmanagerid', title: 'Account Manager ID' },
+            { data: 'address', title: 'Address' },
             { data: 'account_manager', title: 'Account Manager' },
             { data: 'logDate', title: 'Created Date' },
             { data: null, title: 'Actions' }
-            //{ data: 'userType', title: 'userType' },
-            //{ data: 'userStatus', title: 'userStatus' },
-            //{ data: null, title: 'Action' },
-
 
         ],
 
@@ -49,11 +54,30 @@ $(document).ready(function () {
             //        return meta.row + 1;
             //    }
             //},
-            //{
-            //    target: 0,
-            //    visible: false,
-            //},
-
+            {
+                target: 0,
+                visible: false,
+            },
+            {
+                target: 3,
+                visible: false,
+            },
+            {
+                target: 7,
+                visible: false,
+            },
+            {
+                target: 9,
+                visible: false,
+            },
+            {
+                target: 11,
+                visible: false,
+            },
+            {
+                target: 12,
+                visible: false,
+            },
             //{
             //    target: 4,
             //    className: 'text-end',
@@ -138,7 +162,7 @@ $(document).ready(function () {
                         '<a class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill edit-record"><i class="ti ti-edit ti-md"></i></a>' +
                         '<a class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill edit-password"><i class="ti ti-brand-samsungpass text-info ti-md"></i></a>' +
                         '<a class="btn btn-icon btn-text-secondary waves-effect waves-light rounded-pill delete-record"><i class="ti ti-trash text-danger"></i></a>' +
-                        
+
                         '</div>' +
                         '</div>'
                     );
@@ -147,7 +171,7 @@ $(document).ready(function () {
         ],
 
 
-        order: [[0, 'asc']], // Sort by User ID
+        order: [[1, 'asc']], // Sort by User ID
         responsive: true,
         dom:
             '<"row"' +
@@ -194,70 +218,83 @@ $(document).ready(function () {
             setPassword();
             // Evenet listener after table init
             $('.add-new-school').on('click', function () {
+                fv.resetForm(true);
+                //Destroy defa
+                fv.destroy();
                 offCanvasElement = document.querySelector('#add-new-record');
 
                 offCanvasEl = new bootstrap.Offcanvas(offCanvasElement);
                 $('.password-field').show();
                 $('#flag').val('C');
-                $('#empid, #empname, #fname, #email, #mobile, #address, #designation, #password, #cpassowrd').val('');
+                $('#empid, #empname, #email, #mobile, #designation, #password, #cpassowrd').val('');
                 $('#zone, #role, #manager').prop('selectedIndex', 0);
-                $('input[name="gender"]').prop('checked', false);
-                
+                //$('input[name="gender"]').prop('checked', false);
+
+
+                $('.edit-to-dis').prop('disabled', false);
+                $('#form-add-new-record select').val('').trigger('change');
+
                 offCanvasEl.show();
                 FormValidationNew();
+                $(".offcanvas-title").text('Add Employee');
+
+                $("#dt-flag").val("C");
+
             });
             // Evenet listener after table init
             $('.datatables-employees').on('click', '.edit-record', function () {
+                fv.resetForm(true);
                 $('#flag').val('U');
                 $('.password-field').hide();
                 var row = $(this).closest('tr');
                 var data = employee_table.row(row).data();
+
+                $('#uid').val(data.id);
                 $('#empid').val(data.empId);
                 $('#empname').val(data.eName);
-                $('#fname').val(data.efName);
+
                 $('#email').val(data.email);
                 $('#mobile').val(data.mobile);
-                $('#address').val(data.address);
-                $('#designation').val(data.designation);
-                $('#password').val(data.password);
-                $('#cpassowrd').val(data.password); // Assuming you're filling Confirm Password with the same
 
+                $('#designation').val(data.designation);
                 // Select Inputs
-                $('#zone option').each(function () {
-                    if ($(this).text().trim().toLowerCase() === data.department.trim().toLowerCase()) {
-                        $(this).prop('selected', true);
-                        return false; // break the loop
-                    }
-                }); // Assuming 'department' is zone
+                if (data.department != null) {
+                    $('#zone option').each(function () {
+                        if ($(this).text().trim().toLowerCase() === data.department.trim().toLowerCase()) {
+                            $(this).prop('selected', true);
+                            return false; // break the loop
+                        }
+                    }); // Assuming 'department' is zone
+                }
+
                 $('#role').val(data.user_role_id);
-                $('#manager option').each(function () {
-                    if ($(this).text().trim().toLowerCase() === data.account_manager.trim().toLowerCase()) {
-                        $(this).prop('selected', true);
-                        return false; // break the loop
-                    }
-                });
-                $('#manager').trigger('change');
+
+                if (data.account_manager != null) {
+                    $('#manager option').each(function () {
+                        if ($(this).text().trim().toLowerCase() === data.account_manager.trim().toLowerCase()) {
+                            $(this).prop('selected', true);
+                            return false; // break the loop
+                        }
+                    });
+                    $('#manager').trigger('change');
+                }
+
                 // Radio Buttons for Gender
-                $('input[name="gender"][value="' + data.gender.toLowerCase() + '"]').prop('checked', true);
-                $('#empid').prop('disabled', true);
-                $('#email').prop('disabled', true);
+                //$('input[name="gender"][value="' + data.gender.toLowerCase() + '"]').prop('checked', true);
+                $('.edit-to-dis').prop('disabled', true);
                 offCanvasElement = document.querySelector('#add-new-record');
                 offCanvasEl = new bootstrap.Offcanvas(offCanvasElement);
                 $(".offcanvas-title").text("Edit Employee");
-                
                 offCanvasEl.show();
+
+                //Form validation initialisation and destroy statement
+                fv.destroy();
+
                 FormValidationExisting();
+                //
             });
             // Evenet listener after table init
-            $('.add-new').on('click', function () {
-                $(".offcanvas-title").text('Add Employee');
 
-                $("#dt-flag").val("C");
-                fv.resetForm(true);
-                $('#empid').prop('disabled', false);
-                $('#email').prop('disabled', false);
-                $('#form-add-new-record select').val('').trigger('change');
-            });
 
         }
 

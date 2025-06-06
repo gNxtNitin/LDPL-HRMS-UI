@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
     <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-   
+
 
     <style>
         .form-label.required::after {
@@ -27,7 +27,7 @@
             width:78%!important;
         }
         .select2-dropdown {
-           
+
             z-index: 2001!important;
         }
     </style>
@@ -39,7 +39,7 @@
 
     <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
     <script src="~/js/Admin/Employees.js"></script>
-    
+
 }
 
 
@@ -54,29 +54,29 @@
                 </div>
                 <div class="modal-body text-center">
                     <form class=" pt-0 row g-2" id="form-set-password" onsubmit="return false">
-                    <input type="hidden" id="flag1" name="flag1" />
+                        <input type="hidden" id="flag1" name="flag1" />
                         <input type="hidden" id="emp-flag" name="flag2" />
-                    <div class="col-sm-12">
-                        <div class="text-start">
-                            <label for="newpassword" class="form-label required">New Password:</label>
+                        <div class="col-sm-12">
+                            <div class="text-start">
+                                <label for="newpassword" class="form-label required">New Password:</label>
+                            </div>
+                            <div class=" ">
+                                <input type="text" class="form-control dt-newpassword" id="new-password" name="newpassword" placeholder="New Password" maxlength="100">
+                            </div>
                         </div>
-                        <div class=" ">
-                            <input type="text" class="form-control dt-newpassword" id="new-password" name="newpassword" placeholder="New Password" maxlength="100">
+                        <div class="col-sm-12">
+                            <div class="text-start ">
+                                <label for="newcpassowrd" class="form-label required">Confirm Password:</label>
+                            </div>
+                            <div class=" ">
+                                <input type="text" class="form-control dt-newcpassowrd" id="newcpassowrd" name="newcpassowrd" placeholder="Confirm New Password" maxlength="100">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12">
-                <div class="text-start ">
-                    <label for="newcpassowrd" class="form-label required">Confirm Password:</label>
-                </div>
-                <div class=" ">
-                    <input type="text" class="form-control dt-newcpassowrd" id="newcpassowrd" name="newcpassowrd" placeholder="Confirm New Password" maxlength="100" >
-                </div>
-            </div>
                         <div class="col-sm-12 text-end">
                             <button class="btn btn-danger m-2" data-bs-dismiss="modal" id="btn-cancel1" type="button">Cancel</button>
                             <button class="btn btn-primary m-2" id="btn-submit-Pass" type="button">Submit</button>
                         </div>
-            </form>
+                    </form>
                 </div>
             </div>
 
@@ -95,12 +95,13 @@
     <div class="offcanvas-body flex-grow-1">
         <form class="add-new-record pt-0 row g-2" id="form-add-new-record" onsubmit="return false">
             <input type="hidden" id="flag" name="flag" />
+            <input type="hidden" id="uid" name="flag" />
             <div class="col-sm-12">
                 <div class=" text-right">
                     <label for="empid" class="form-label required">EMPID:</label>
                 </div>
                 <div class=" ">
-                    <input type="text" class="form-control dt-empid" id="empid" name="empid" placeholder="Employee ID" maxlength="20" >
+                    <input type="text" class="form-control dt-empid edit-to-dis" id="empid" name="empid" placeholder="Employee ID" maxlength="20">
                 </div>
             </div>
             <div class="col-sm-12">
@@ -108,49 +109,49 @@
                     <label for="empname" class="form-label required">Name:</label>
                 </div>
                 <div class=" ">
-                    <input type="text" class="form-control dt-empname" id="empname" name="empname" placeholder="Employee Name" maxlength="100" >
+                    <input type="text" class="form-control dt-empname edit-to-dis" id="empname" name="empname" placeholder="Employee Name" maxlength="100">
                 </div>
             </div>
-            <div class="col-sm-12">
+            @* <div class="col-sm-12">
                 <div class=" text-right">
                     <label for="fname" class="form-label required">Father Name:</label>
                 </div>
                 <div class=" ">
                     <input type="text" class="form-control dt-fname" id="fname" name="fname" placeholder="Father's Name" maxlength="100" >
                 </div>
+            </div> *@
+            <div class="col-sm-12">
+                <div class=" text-right">
+                    <label for="email" class="form-label">Email:</label>
+                </div>
+                <div class=" ">
+                    <input type="text" class="form-control dt-email" id="email" name="email" placeholder="Email" maxlength="100">
+                </div>
             </div>
             <div class="col-sm-12">
                 <div class=" text-right">
-                    <label for="email" class="form-label required">Email:</label>
+                    <label for="mobile" class="form-label">Mobile:</label>
                 </div>
                 <div class=" ">
-                    <input type="text" class="form-control dt-email" id="email" name="email" placeholder="Email" maxlength="100" >
+                    <input type="text" class="form-control dt-mobile edit-to-dis" id="mobile" name="mobile" placeholder="Mobile" maxlength="10">
                 </div>
             </div>
-            <div class="col-sm-12">
-                <div class=" text-right">
-                    <label for="mobile" class="form-label required">Mobile:</label>
-                </div>
-                <div class=" ">
-                    <input type="text" class="form-control dt-mobile" id="mobile" name="mobile" placeholder="Mobile" maxlength="10" >
-                </div>
-            </div>
-            <div class="row">
+            @* <div class="row">
                 <label for="fname" class="form-label required">Gender:</label>
                 <div class="col mt-2">
                     <div class="form-check form-check-inline">
                         <input name="gender"
-                               class="form-check-input"
+                               class="form-check-input edit-to-dis"
                                type="radio"
-                               value="male"
+                               value="M"
                                id="gender-male"  checked/>
                         <label class="form-check-label" for="gender">Male</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input name="gender"
-                               class="form-check-input"
+                               class="form-check-input edit-to-dis"
                                type="radio"
-                               value="female"
+                               value="F"
                                id="gender-female" />
                         <label class="form-check-label" for="gender">
                             Female
@@ -158,30 +159,30 @@
                     </div>
                     <div class="form-check form-check-inline">
                         <input name="gender"
-                               class="form-check-input"
+                               class="form-check-input edit-to-dis"
                                type="radio"
-                               value="others"
+                               value="O"
                                id="gender-others" />
                         <label class="form-check-label" for="gender">
                             Others
                         </label>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-12">
+            </div> *@
+            @* <div class="col-sm-12">
                 <div class=" text-right">
                     <label for="address" class="form-label required">Address:</label>
                 </div>
                 <div class=" ">
-                    <input type="text" class="form-control dt-address" id="address" name="address" placeholder="Address" maxlength="200" >
+                    <input type="text" class="form-control dt-address edit-to-dis" id="address" name="address" placeholder="Address" maxlength="200">
                 </div>
-            </div>
+            </div> *@
             <div class="col-sm-12">
                 <div class=" text-right">
-                    <label for="designation" class="form-label required">Designation:</label>
+                    <label for="designation" class="form-label">Designation:</label>
                 </div>
                 <div class=" ">
-                    <input type="text" class="form-control dt-designation" id="designation" name="designation" placeholder="Designation" maxlength="100">
+                    <input type="text" class="form-control dt-designation edit-to-dis" id="designation" name="designation" placeholder="Designation" maxlength="100">
                 </div>
             </div>
             <div class="col-sm-12">
@@ -215,7 +216,7 @@
                     <label for="password" class="form-label required">Password:</label>
                 </div>
                 <div class=" ">
-                    <input type="text" class="form-control dt-password" id="password" name="password" placeholder="Password" maxlength="100" >
+                    <input type="text" class="form-control dt-password" id="password" name="password" placeholder="Password" maxlength="100">
                 </div>
             </div>
             @* <div class="col-sm-12">
@@ -239,7 +240,7 @@
                     </select>
                 </div>
             </div>
-           
+
 
 
 
@@ -258,18 +259,23 @@
                 <tr>
 
 
-                 
+                    <th>ID</th>
                     <th>EMP ID</th>
 
                     <th>Name</th>
+                    <th>Designation ID</th>
                     <th>Designation</th>
                     <th>Mobile</th>
                     <th>Email</th>
+                    <th>Role ID</th>
                     <th>Role</th>
-                    <th>Zone</th>
+                   @*  <th>Zone ID</th>
+                    <th>Zone</th> *@
+                    <th>Account Manager ID</th>
+                    <th>Address</th>
                     <th>Account Manager</th>
                     <th>Created Date</th>
-                    
+
                     <th>Actions</th>
 
                 </tr>
@@ -292,12 +298,17 @@
                                 message: 'Password is required'
                             },
                             stringLength: {
-                                min: 6,
-                                message: 'Password must be at least 6 characters'
+                                min: 8,
+                                message: 'Password must be at least 8 characters'
+                            },
+
+                            regexp: {
+                                regexp: new RegExp("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$"),
+                                message: 'Password must contain letters, numbers, and at least one special character'
                             }
                         }
                     },
-                    
+
                     newcpassowrd: {
                         validators: {
                             notEmpty: {
@@ -311,7 +322,7 @@
                             }
                         }
                     }
-                    
+
           },
           plugins: {
             trigger: new FormValidation.plugins.Trigger(),
@@ -333,7 +344,7 @@
         //console.log(fv);
     }
     function FormValidationNew () {
-        
+
          fv = FormValidation.formValidation(document.getElementById('form-add-new-record'), {
           fields: {
             empid: {
@@ -358,22 +369,10 @@
                             }
                         }
                     },
-                    fname: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Father name is required'
-                            },
-                            stringLength: {
-                                max: 100,
-                                message: 'Father name must be less than 100 characters'
-                            }
-                        }
-                    },
+                    
                     email: {
                         validators: {
-                            notEmpty: {
-                                message: 'Email is required'
-                            },
+
                             // emailAddress: {
                             //     message: 'The input is not a valid email address'
                             // },
@@ -385,86 +384,53 @@
                     },
                     mobile: {
                         validators: {
-                            notEmpty: {
-                                message: 'Mobile number is required'
-                            },
+
                             regexp: {
                                 regexp: /^[0-9]{10,15}$/,
                                 message: 'Enter a valid mobile number (10-15 digits)'
                             }
                         }
                     },
-                    gender: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Gender is required'
-                            }
-                        }
-                    },
-                    address: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Address is required'
-                            },
-                            stringLength: {
-                                max: 200,
-                                message: 'Address must be less than 200 characters'
-                            }
-                        }
-                    },
-                    zone: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Zone is required'
-                            }
-                        }
-                    },
-                    role: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Role is required'
-                            }
-                        }
-                    },
+                    
+                    // zone: {
+                    //     validators: {
+                    //         notEmpty: {
+                    //             message: 'Zone is required'
+                    //         }
+                    //     }
+                    // },
+                    // role: {
+                    //     validators: {
+                    //         notEmpty: {
+                    //             message: 'Role is required'
+                    //         }
+                    //     }
+                    // },
                     password: {
                         validators: {
                             notEmpty: {
                                 message: 'Password is required'
                             },
+
                             stringLength: {
-                                min: 6,
-                                message: 'Password must be at least 6 characters'
+                                min: 8,
+                                message: 'Password must be at least 8 characters'
+                            },
+
+                            regexp: {
+                                regexp: new RegExp("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$"),
+                                message: 'Password must contain letters, numbers, and at least one special character'
                             }
                         }
                     },
-                    designation: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Designation is required'
-                            }
-                            
-                        }
-                    },
-                    // cpassowrd: {
+                    
+                    // manager: {
                     //     validators: {
                     //         notEmpty: {
-                    //             message: 'Confirm password is required'
-                    //         },
-                    //         identical: {
-                    //             compare: function () {
-                    //                 return document.getElementById('password').value;
-                    //             },
-                    //             message: 'Passwords do not match'
+                    //             message: 'Account manager is required'
                     //         }
                     //     }
                     // },
-                    manager: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Account manager is required'
-                            }
-                        }
-                    },
           },
           plugins: {
             trigger: new FormValidation.plugins.Trigger(),
@@ -510,22 +476,12 @@
                             }
                         }
                     },
-                    fname: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Father name is required'
-                            },
-                            stringLength: {
-                                max: 100,
-                                message: 'Father name must be less than 100 characters'
-                            }
-                        }
-                    },
+                   
                     email: {
                         validators: {
-                            notEmpty: {
-                                message: 'Email is required'
-                            },
+                            // notEmpty: {
+                            //     message: 'Email is required'
+                            // },
                             // emailAddress: {
                             //     message: 'The input is not a valid email address'
                             // },
@@ -537,86 +493,36 @@
                     },
                     mobile: {
                         validators: {
-                            notEmpty: {
-                                message: 'Mobile number is required'
-                            },
+
                             regexp: {
                                 regexp: /^[0-9]{10,15}$/,
                                 message: 'Enter a valid mobile number (10-15 digits)'
                             }
                         }
                     },
-                    gender: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Gender is required'
-                            }
-                        }
-                    },
-                    address: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Address is required'
-                            },
-                            stringLength: {
-                                max: 200,
-                                message: 'Address must be less than 200 characters'
-                            }
-                        }
-                    },
-                    zone: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Zone is required'
-                            }
-                        }
-                    },
-                    role: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Role is required'
-                            }
-                        }
-                    },
-                    // password: {
+                   
+                    // zone: {
                     //     validators: {
                     //         notEmpty: {
-                    //             message: 'Password is required'
-                    //         },
-                    //         stringLength: {
-                    //             min: 6,
-                    //             message: 'Password must be at least 6 characters'
+                    //             message: 'Zone is required'
                     //         }
                     //     }
                     // },
-                    designation: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Designation is required'
-                            }
-
-                        }
-                    },
-                    // cpassowrd: {
+                    // role: {
                     //     validators: {
                     //         notEmpty: {
-                    //             message: 'Confirm password is required'
-                    //         },
-                    //         identical: {
-                    //             compare: function () {
-                    //                 return document.getElementById('password').value;
-                    //             },
-                    //             message: 'Passwords do not match'
+                    //             message: 'Role is required'
                     //         }
                     //     }
                     // },
-                    manager: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Account manager is required'
-                            }
-                        }
-                    },
+                    
+                    // manager: {
+                    //     validators: {
+                    //         notEmpty: {
+                    //             message: 'Account manager is required'
+                    //         }
+                    //     }
+                    // },
           },
           plugins: {
             trigger: new FormValidation.plugins.Trigger(),
@@ -669,8 +575,10 @@
 
                         }
                     });
-
-                    var userModel = {
+                    var todecide = $('#flag').val();
+                    if(todecide == 'C' )
+                    {
+                        var userModel = {
                         flag :  $('#flag').val(),
                         UserRoleId: $('#role').val(),
                         EmpId: $('#empid').val(),
@@ -686,22 +594,26 @@
                         //LogDate: new Date().toISOString(), // You can replace with desired date format
                         AccountManager: $('#manager').val()
                     };
-                    // console.log(userModel);
-                    // return;
-                    // var obj = new Object();
-                    // obj.flag = 'C';
-                    // obj.SchoolCode= 'new';
-                    // obj.empid= $('.dt-empid').val();
-                    // obj.ename= $('.dt-empname').val();
-                    // obj.incharge= $('.dt-empdep').val();
-                    // obj.AccountManager= $('.dt-empman').val();
-                    // obj.VendorType= $('.dt-vendor').val();
-                    // obj.SchoolCategory= $('.dt-scat').val();
-                    // obj.SchoolName= $('.dt-school').val();
-                    // obj.saddress= $('.dt-address').val();
-                    // obj.state= $('.dt-state').val();
-                    // obj.city= $('.dt-city').val();
-                       
+                    }else{
+                        var userModel = {
+                        flag :  $('#flag').val(),
+                        UserRoleId: $('#role').val(),
+                        EmpId: $('#uid').val(),
+                        EName: $('#empname').val(),
+                        Email: $('#email').val(),
+                        EFName: $('#fname').val(),
+                        Password: $('#password').val(),
+                        Designation: $('#designation').val(), // Add if you have a field for this
+                        Department: $('#zone').val(),  // Add if you have a field for this
+                        Gender: $('input[name="gender"]:checked').val(),
+                        Mobile: $('#mobile').val(),
+                        Address: $('#address').val(),
+                        //LogDate: new Date().toISOString(), // You can replace with desired date format
+                        AccountManager: $('#manager').val()
+                    };
+                    }
+
+
                         $.post({
                             url: '@Url.Action("AddUpdateDeleteEmployee", "Admin")',
                             data: { sr1: userModel },
@@ -712,14 +624,14 @@
                                 if(resp.code>0){
                                     $('#add-new-record').offcanvas('toggle');
                                     employee_table.ajax.reload(null, false);
-                                   
+
                                     ToastWrapper.success(resp.message);
                                 }
                                 else{
                                     ToastWrapper.error(resp.message);
                                 }
-                                
-                                
+
+
 
 
                             },
@@ -763,29 +675,31 @@
                         case 2:
                             manager = JSON.parse(item);
                             break;
-                        
+
                         default:
                             // fallback if needed
                     }
 
             });
-            //console.log(zone);
-         
+          
+
             // For Vendor Select input
-            zone.forEach(function (item) {
-                //console.log(item.SERIALNO) ;
-                $('.dt-zone').append(`<option value="${item.SERIALNO}">${item.DEPARTMENT}</option>`);
-            });
+            // zone.forEach(function (item) {
+              
+            //     $('.dt-zone').append(`<option value="${item.SERIALNO}">${item.DEPARTMENT}</option>`);
+            // });
             // For CAtegory select input
             role.forEach(function (item) {
-                $('.dt-role').append(`<option value="${item.USER_ROLE_ID}">${item.USER_ROLE_ID}</option>`);
+                $('.dt-role').append(`<option value="${item.USER_ROLE_ID}">${item.ROLENAME}</option>`);
             });
             // For STate select input
             manager.forEach(function (item) {
                 $('.dt-manager').append(`<option value="${item.EMPID}">${item.ENAME}</option>`);
             });
-            
-            $('.select2').select2();
+
+            $('.select2').select2({
+      dropdownParent: $('#add-new-record') // very important
+    });
 
         });
     })
@@ -831,7 +745,7 @@
                 console.log(id1);
                var empInfo = {
                             flag: "D",
-                            EmpId: id1['empId'],
+                            EmpId: id1['id'],
                         };
                $.post({
                    url: '@Url.Action("AddUpdateDeleteEmployee", "Admin")',
@@ -871,7 +785,7 @@
             var row = $(this).closest('tr');
             var id1 = employee_table.row(row).data();
             $('#flag1').val('P');
-            $('#emp-flag').val(id1.empId);
+            $('#emp-flag').val(id1.id);
             $('.modal-weigh').trigger('click');
 
         });
@@ -911,13 +825,13 @@
 
                     var userModel = {
                         flag :  $('#flag1').val(),
-                        
+
                         EmpId: $('#emp-flag').val(),
-                        
+
                         Password: $('.dt-newpassword').val(),
-                        
+
                     };
-                    
+
 
                         $.post({
                             url: '@Url.Action("AddUpdateDeleteEmployee", "Admin")',

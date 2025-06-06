@@ -36,9 +36,15 @@ namespace UserManagementService.Models
 
         public string LogDate { get; set; }
 
-        //public string? Photo { get; set; }
+
         [JsonPropertyName("account_manager")]
         public string AccountManager { get; set; }
+        [JsonPropertyName("departmentid")]
+        public string DepartmentId { get; set; }
+        [JsonPropertyName("rolename")]
+        public string RoleName { get; set; }
+        [JsonPropertyName("accountmanagerid")]
+        public string AccountManagerId { get; set; }
 
         //public bool IsActive { get; set; }
 

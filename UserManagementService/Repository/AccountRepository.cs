@@ -22,7 +22,45 @@ namespace UserManagementService.Repository
             _apiClientHelper = apiClientHelper;
             _memoryCacheService = memoryCacheService;
         }
+        private string MaskEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@"))
+                return email;
 
+            var parts = email.Split('@');
+            if (parts.Length != 2)
+                return email; // Invalid format, return as-is
+
+            string userId = parts[0];
+            string domain = parts[1];
+            int length = userId.Length;
+
+            if (length <= 2)
+            {
+                // Too short to reveal anything, mask all
+                return $"****@{domain}";
+            }
+
+            string prefix, suffix;
+
+            if (length <= 6)
+            {
+                // Show 1 letter at start and end
+                prefix = userId.Substring(0, 1);
+                suffix = userId.Substring(length - 1, 1);
+            }
+            else
+            {
+                // Show 1-2 at start, 1-2 at end
+                int prefixLen = Math.Min(2, length / 2);
+                int suffixLen = Math.Min(2, length - prefixLen - 1);
+                prefix = userId.Substring(0, prefixLen);
+                suffix = userId.Substring(length - suffixLen, suffixLen);
+            }
+
+            string maskedMiddle = new string('*', length - prefix.Length - suffix.Length);
+            return $"{prefix}{maskedMiddle}{suffix}@{domain}";
+        }
         public async Task<bool> IsOTPRequestValid(string uid)
         {
             string val = _memoryCacheService.Get(uid);
@@ -296,8 +334,9 @@ namespace UserManagementService.Repository
             return isResetSuccessfull;
         }
 
-        public async Task<int> SendForgotPasswordEmail(string email)
+        public async Task<EmailStatus> SendForgotPasswordEmail(string email)
         {
+            EmailStatus emailStatus = new EmailStatus();
             LoginRequest loginRequestModel = new LoginRequest
             {
                 MobileOrEmail = email,
@@ -311,7 +350,13 @@ namespace UserManagementService.Repository
 
             APIResponse respBody = await _apiClientHelper.PostAsync<LoginRequest, APIResponse>("/api/PasswordManagement/ForgotPassword", loginRequestModel);
 
-            return respBody.Code;
+            emailStatus.Status = respBody.Code;
+            if (emailStatus.Status > 0)
+            {
+                emailStatus.SentOnAddress = MaskEmail(respBody.Data.ToString());
+            }
+
+            return emailStatus;
         }
 
         public async Task<bool> UpdatePassword(string userId, string password)

@@ -177,56 +177,44 @@ namespace LDPLWEBUI.Controllers
                 // Optionally return specific validation errors
                 return new JsonResult(new { code = -1, message = "Invalid Inputs." });
             }
-            EmployeeRequestModel req = new EmployeeRequestModel
-            {
-                flag = sr1.flag ?? "G",
-                Id = null, // or set based on your logic
-                UserRoleId = sr1.UserRoleId,
-                EmpId = sr1.EmpId,
-                EName = sr1.EName,
-                Email = sr1.Email,
-                EFName = sr1.EFName,
-                Password = string.IsNullOrEmpty( sr1.Password ) ?  sr1.Password : PasswordConfig.GetMd5Hash(sr1.Password),
-                Designation = sr1.Designation,
-                Department = sr1.Department,
-                Gender = sr1.Gender,
-                Mobile = sr1.Mobile,
-                Address = sr1.Address,
-                LogDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), // or any required format
-                AccountManager = sr1.AccountManager
-            };
-            
-            var res = await _adminPortalRepository.CreateUpdateDeleteEmployee(req);
-            //var res = true;
-            //if (res)
+            return new JsonResult(new { code = 1, message = "Employee created successfully." });
+            //EmployeeRequestModel req = new EmployeeRequestModel
             //{
-            //    if (sr1.flag == "C")
-            //    {
-            //        TempData["CDCode"] = "1";
-            //        TempData["CDMessage"] = "School created successfully!";
-            //    }
-            //    else
-            //    {
-            //        TempData["CDCode"] = "1";
-            //        TempData["CDMessage"] = "School deleted successfully!";
-            //    }
+            //    flag = sr1.flag ?? "G",
+            //    Id = null, // or set based on your logic
+            //    UserRoleId = sr1.UserRoleId,
+            //    EmpId = sr1.EmpId,
+            //    EName = sr1.EName,
+            //    Email = sr1.Email,
+            //    //EFName = sr1.EFName,
+            //    Password = string.IsNullOrEmpty( sr1.Password ) ?  sr1.Password : PasswordConfig.GetMd5Hash(sr1.Password),
+            //    Designation = sr1.Designation,
+            //    Department = sr1.Department,
+            //    //Gender = sr1.Gender,
+            //    Mobile = sr1.Mobile,
+            //    Address = sr1.Address,
+            //    LogDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), // or any required format
+            //    AccountManager = sr1.AccountManager
+            //};
+            
+            //var res = await _adminPortalRepository.CreateUpdateDeleteEmployee(req);
+            
+            //if (sr1.flag == "C")
+            //{
+            //    return res ? new JsonResult(new { code = 1, message = "Employee created successfully." }) : new JsonResult(new { code = -1, message = "Failed to add employee." });
             //}
-            if (sr1.flag == "C")
-            {
-                return res ? new JsonResult(new { code = 1, message = "Employee created successfully." }) : new JsonResult(new { code = -1, message = "Failed to add employee." });
-            }
-            else if (sr1.flag == "D")
-            {
-                return res ? new JsonResult(new { code = 1, message = "Employee deleted successfully." }) : new JsonResult(new { code = -1, message = "Failed to delete employee." });
-            }
-            else if (sr1.flag == "P")
-            {
-                return res ? new JsonResult(new { code = 1, message = "Password Updated successfully." }) : new JsonResult(new { code = -1, message = "Failed to update password." });
-            }
-            else
-            {
-                return res ? new JsonResult(new { code = 1, message = "Employee updated successfully." }) : new JsonResult(new { code = -1, message = "Failed to updated employee." });
-            }
+            //else if (sr1.flag == "D")
+            //{
+            //    return res ? new JsonResult(new { code = 1, message = "Employee deleted successfully." }) : new JsonResult(new { code = -1, message = "Failed to delete employee." });
+            //}
+            //else if (sr1.flag == "P")
+            //{
+            //    return res ? new JsonResult(new { code = 1, message = "Password Updated successfully." }) : new JsonResult(new { code = -1, message = "Failed to update password." });
+            //}
+            //else
+            //{
+            //    return res ? new JsonResult(new { code = 1, message = "Employee updated successfully." }) : new JsonResult(new { code = -1, message = "Failed to updated employee." });
+            //}
         }
         public async Task<JsonResult> GetSchoolIncharge()
         {
