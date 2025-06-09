@@ -21,7 +21,7 @@ namespace LDPLWEBUI.Models
 
         public string? Designation { get; set; }
 
-        public string Department { get; set; }
+        public string? Department { get; set; }
 
         public string? Gender { get; set; }
 
@@ -33,7 +33,7 @@ namespace LDPLWEBUI.Models
 
         //public string? Photo { get; set; }
 
-        public string AccountManager { get; set; }
+        public string? AccountManager { get; set; }
 
     }
 }
