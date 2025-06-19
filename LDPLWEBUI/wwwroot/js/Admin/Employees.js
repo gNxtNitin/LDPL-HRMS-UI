@@ -35,8 +35,8 @@ $(document).ready(function () {
             { data: 'user_role_id', title: 'Role ID' },
             { data: 'rolename', title: 'Role' },
 
-            //{ data: 'departmentid', title: 'Zone ID' },
-            //{ data: 'department', title: 'Zone' },
+            { data: 'departmentid', title: 'Zone ID' },
+            { data: 'department', title: 'Zone' },
 
             { data: 'accountmanagerid', title: 'Account Manager ID' },
             { data: 'address', title: 'Address' },

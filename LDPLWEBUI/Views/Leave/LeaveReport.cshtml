@@ -1,0 +1,478 @@
+﻿@{
+	Layout = "_DashboardLayout";
+}
+
+@section PageStyles {
+	<link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+	<link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+	<link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+	<link rel="stylesheet" href="~/css/site.css" />
+	<style>
+		.form-label.required::after {
+			content: " *";
+			color: red;
+		}
+	</style>
+}
+
+
+@section PageScripts
+{
+
+	<script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+	<script src="~/js/Leave/LeaveReport.js"></script>
+
+	@* <script src="~/app-assets/js/app-user-list.js"></script> *@
+}
+
+
+<div class="offcanvas offcanvas-end" id="add-new-record">
+	<div class="offcanvas-header border-bottom">
+		<h5 class="offcanvas-title" id="exampleModalLabel">New Zone</h5>
+		<button type="button"
+				class="btn-close text-reset"
+				data-bs-dismiss="offcanvas"
+				aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body flex-grow-1">
+		<form class="add-new-record pt-0 row g-2" id="form-add-new-record" onsubmit="return false">
+			<div class="col-sm-12">
+				<div class=" text-right">
+					<label for="fromD" class="form-label required">From Date:</label>
+				</div>
+				<div class=" ">
+					<input type="text" class="date-picker form-control dt-fromD" name="fromD" id="fromD" placeholder="DD/MM/YYYY" />
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<div class=" text-right">
+					<label for="toD" class="form-label required">To Date:</label>
+				</div>
+				<div class=" ">
+					<input type="text" class="date-picker form-control dt-toD" name="toD" id="toD" placeholder="DD/MM/YYYY" />
+				</div>
+			</div>
+			<div class="col-sm-12">
+			<div class="form-check">
+				<input class="form-check-input dt-isHalf" name="isHalf" type="checkbox" id="isHalf">
+				<label class="form-check-label" for="isHalf"> Is Half Day </label>
+			</div>
+			</div>
+			<div class="col-sm-12">
+				<div class=" text-right">
+					<label for="totD" class="form-label required">Total Days:</label>
+				</div>
+				<div class=" ">
+					<input type="text" class="form-control dt-totD" name="totD" id="totD" placeholder="0" disabled />
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<div class=" text-right">
+					<label for="reason" class="form-label required">Reason:</label>
+				</div>
+				<div class=" ">
+					<input type="text" class="form-control dt-reason" id="ereason" name="reason" placeholder="Reason" maxlength="100">
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<button class="btn btn-danger m-2" data-bs-dismiss="offcanvas" id="btn-cancel" type="button">Cancel</button>
+				<button class="btn btn-primary m-2" id="btn-submit" type="button">Submit</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+<!--This is the modal-->
+@* <div class="modal fade" id="shareProject" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-simple modal-enable-otp modal-share-project modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-body">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="text-center">
+					<h4 class="mb-2">Add Zone </h4>
+					
+				</div>
+			</div>
+			 <div class="form-fillout">
+			<form id="formAddNewRecord">
+				<div class="col-6">
+					<div class=" text-right">
+						<label for="zname" class="form-label">Zone:</label>
+					</div>
+					<div class=" ">
+						<input type="text" class="form-control" id="zname" name="zname" placeholder="Enter Zone" maxlength="60">
+					</div>
+				</div>
+			</form>
+			</div> 
+			<div class="row my-2 mx-0">
+				<div class="d-flex gap-2 justify-content-end">
+					<button class="btn btn-danger m-2" data-bs-dismiss="modal" id="btn-cancel" type="button">Cancel</button>
+					<button class="btn btn-primary m-2" id="btn-submit" type="button">Submit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> *@
+<!-- Tjis is the main portal;-->
+<div class="card">
+	<div class="card-datatable table-responsive">
+		<table class="datatables-orders table table-hover dt-table-striped">
+			<thead class="border-top bg-menu-theme text-white fw-2">
+				<tr>
+
+					@* <th></th> *@
+					 	<th>ID</th> 
+					<th>Date</th>
+					<th>Reason</th>
+					<th>From Date</th>
+					<th>To Date</th>
+					<th>Total Days</th>
+					<th>IsHalfDay</th>
+					<th>App Status</th>
+					<th>HR Status</th>
+
+				</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+<button type="button" class=" modal-weigh" style="display:none;" data-bs-toggle="modal" data-bs-target="#shareProject">
+	Show
+</button>
+
+<script>
+	var fv;
+	$(document).ready(function () {
+		 fv = FormValidation.formValidation(document.getElementById('form-add-new-record'), {
+		  fields: {
+			fromD: {
+			  validators: {
+				notEmpty: {
+				  message: 'From Date is required.'
+				},
+				callback: {
+				message: 'From and To date must be same if Half Day is checked',
+				callback: function(input) {
+						console.log(1);
+					  const halfDayChecked = $('#isHalf').is(':checked');
+					  const fromDate = $('#fromD').val();
+					  const toDate = $('#toD').val();
+					  if (halfDayChecked) {
+
+						return fromDate === toDate;
+					  }
+					  return true;
+					},
+				}
+			  }
+			  
+			},
+			toD: {
+			  validators: {
+				notEmpty: {
+				  message: 'To Date is required.'
+				},
+				callback: {
+					message: 'From and To date must be same if Half Day is checked',
+					callback: function(input) {
+					  const halfDayChecked = $('#isHalf').is(':checked');
+					  const fromDate = $('#fromD').val();
+					  const toDate = $('#toD').val();
+					  if (halfDayChecked) {
+						return fromDate === toDate;
+					  }
+					  return true;
+					},
+				}
+			  }
+			  
+			},
+			// isHalf: {
+			//   validators: {
+			// 	notEmpty: {
+			// 	  message: 'Is Half Day is required.'
+			// 	}
+			//   }
+			// },
+			reason: {
+			  validators: {
+				notEmpty: {
+				  message: 'Reason is required.'
+				}
+			  }
+			}
+
+		  },
+		  plugins: {
+			trigger: new FormValidation.plugins.Trigger(),
+			bootstrap5: new FormValidation.plugins.Bootstrap5({
+			  eleValidClass: '',
+			  rowSelector: '.row'
+			}),
+			submitButton: new FormValidation.plugins.SubmitButton(),
+			autoFocus: new FormValidation.plugins.AutoFocus()
+		  },
+		  init: instance => {
+			instance.on('plugins.message.placed', function (e) {
+			  if (e.element.parentElement.classList.contains('input-group')) {
+				e.element.parentElement.insertAdjacentElement('afterend', e.messageElement);
+			  }
+			});
+		  }
+		});
+		//console.log(fv);
+	})
+</script>
+<script>
+        function convertToMMDDYYYY(dateStr) {
+      // Split the string by '/'
+      const parts = dateStr.split('/');
+
+      if (parts.length !== 3) return ''; // Invalid format check
+
+      const [day, month, year] = parts;
+
+      return `${month}/${day}/${year}`;
+    }
+        function formatDateToDDMMYYYY(date) {
+      let day = date.getDate().toString().padStart(2, '0');
+      let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+      let year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+ </script>
+
+<script>
+	$(document).ready(function () {
+		document.getElementById('btn-submit').addEventListener('click', function () {
+			//console.log(fv);
+			var btn = $(this);
+			fv.validate().then(function (status) {
+
+				if (status !== 'Valid') {
+
+				  // If valid, you can manually submit the form here
+				  return;
+				}
+				else{
+
+
+					btn.prop('disabled', true);
+
+					$(".offcanvas-body").block({
+						message: '<div class="spinner-border text-primary" role="status"></div>',
+
+						css: {
+							border: 'none',
+							backgroundColor: 'transparent'
+						},
+
+						overlayCSS: {
+							backgroundColor: '#fff',
+							opacity: 0.8
+
+						}
+					});
+					var pp1 = convertToMMDDYYYY($('#fromD').val());
+					var pp2 = convertToMMDDYYYY($('#toD').val());
+					console.log(pp1,pp2);
+						var leaveInfo = {
+							flag: "C",
+							fromDate: pp1,
+							toDate: pp2,
+							reason: $('#ereason').val(),
+							halfDay: $('#isHalf').is(':checked') ? '1' : '0',
+							//name: $('#fromD').val().trim(),
+
+						};
+
+						$.post({
+							url: '@Url.Action("AddUpdateDeleteLeave", "Leave")',
+							data: { sr1: leaveInfo },
+							success: function (resp) {
+								btn.prop('disabled', false);
+								$(".offcanvas-body").unblock();
+								if(resp.code>0){
+									$('#add-new-record').offcanvas('toggle');
+									zone_table.ajax.reload(null, false);
+									ToastWrapper.success(`Leave requested successfully!`);
+								}
+								else{
+									ToastWrapper.error(resp.message);
+								}
+
+
+
+							},
+							error: function (xhr, status, error) {
+								btn.prop('disabled', false);
+								$(".offcanvas-body").unblock();
+								ToastWrapper.error("Something went wrong.")
+							}
+						});
+
+
+				}
+			});
+
+
+
+
+
+
+
+
+		});
+	})
+</script>
+<script>
+	$(document).ready(function() {
+		$('#fromD').on('change', function() {
+			var pp1 = $(this).val();
+			var pp2 = $('#toD').val();
+			
+			if( (pp1 != null && pp1 != "" )  && (pp2 != null && pp2 != "" ) )
+			{
+				var hec = calculateDays(convertDateToYMD(pp1), convertDateToYMD(pp2));
+
+				var isreq11 = $('#isHalf').is(':checked');
+				if(isreq11)
+				{
+					$('#totD').val(hec+1-0.5);
+				}
+				else{
+					$('#totD').val(hec+1);
+				}
+			}
+			
+			
+		});
+		$('#toD').on('change', function() {
+
+			var pp1 = $(this).val();
+			var pp2 = $('#fromD').val();
+			
+			if( (pp1 != null && pp1 != "" )  && (pp2 != null && pp2 != "" ) )
+			{
+				var hec = calculateDays(convertDateToYMD(pp2), convertDateToYMD(pp1));
+				var isreq11 = $('#isHalf').is(':checked');
+				if(isreq11)
+				{
+					$('#totD').val(hec+1-0.5);
+				}
+				else{
+					$('#totD').val(hec+1);
+				}
+			}
+		});
+		$('#isHalf').on('change', function () {
+			var pick = $('#isHalf').is(':checked');
+			var tt1 = $('#totD').val();
+			if(pick)
+			{
+				$('#totD').val(parseFloat(tt1) - 0.5 );
+			}
+			else{
+				$('#totD').val(parseFloat(tt1) + 0.5);
+			}
+		})
+	})
+</script>
+
+<script>
+	function convertDateToYMD(dateStr) {
+		// Expecting input format: DD/MM/YYYY
+		var parts = dateStr.split('/');
+		if (parts.length !== 3) return null;
+
+		var day = parts[0];
+		var month = parts[1];
+		var year = parts[2];
+
+		return `${year}/${month}/${day}`;
+	}
+	function calculateDays(startDate, endDate) {
+		let start = new Date(startDate);
+		let end = new Date(endDate);
+		let timeDifference = end - start;
+		let daysDifference = timeDifference / (1000 * 3600 * 24);
+		return daysDifference;
+	}
+	function deleteRecord () {
+	$('.datatables-orders').on('click', '.delete-record', function() {
+	 //$('.delete-record').on('click', function() {
+
+		var btn = $(this);
+		var row = $(this).closest('tr');
+		Swal.fire({
+
+			text: 'Are you sure you would like to delete this item?',
+
+			icon: 'warning',
+
+			showCancelButton: true,
+
+			confirmButtonText: 'Yes',
+
+			customClass: {
+
+				confirmButton: 'btn btn-primary me-2 waves-effect waves-light',
+
+				cancelButton: 'btn btn-label-secondary waves-effect waves-light'
+
+			},
+
+			buttonsStyling: false
+
+		}).then(function (result) {
+
+			if (result.value) {
+				btn.prop('disabled', true);
+				var itemList = [];
+
+
+				var id1 = zone_table.row(row).data();
+				//console.log(id1['zoneid']);
+				//var id = row.find('td:eq(0)').text();
+				//var quantity = row.find('td').eq(5).find('input').val();
+
+			   var zoneInfo = {
+							flag: "D",
+							zoneid: id1['zoneid'],
+
+						};
+			   $.post({
+				   url: '@Url.Action("AddUpdateDeleteZone", "Admin")',
+				   data: { sr1 : zoneInfo },
+				   success: function (resp) {
+					   btn.prop('disabled', false);
+					   //console.log(resp);
+					   if (resp.code > 0 )
+					  {
+						zone_table.row(btn.parents('tr')).remove().draw();
+						ToastWrapper.success(`Zone deleted successfully!`);
+					  }else{
+						  //console.log(resp);
+						   ToastWrapper.error(resp.message);
+					  }
+
+
+				   },
+				   error: function (xhr, status, error) {
+					   btn.prop('disabled', false);
+					   ToastWrapper.error(xhr.responseText);
+				   }
+			   });
+			}
+			else{
+			}
+		});
+
+
+
+
+	   });
+	}
+</script>

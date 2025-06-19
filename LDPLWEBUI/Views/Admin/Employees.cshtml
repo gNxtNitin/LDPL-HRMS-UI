@@ -187,7 +187,7 @@
             </div>
             <div class="col-sm-12">
                 <div class=" text-right">
-                    <label for="zone" class="form-label required">Zone:</label>
+                    <label for="zone" class="form-label">Zone:</label>
                 </div>
                 <div class=" ">
                     <select class="form-select dt-zone" id="zone" name="zone" aria-label="Select Zone" required>
@@ -200,7 +200,7 @@
             </div>
             <div class="col-sm-12">
                 <div class=" text-right">
-                    <label for="role" class="form-label required">Role:</label>
+                    <label for="role" class="form-label">Role:</label>
                 </div>
                 <div class=" ">
                     <select class="form-select dt-role" id="role" name="role" aria-label="Select Role" required>
@@ -229,7 +229,7 @@
             </div> *@
             <div class="col-sm-12">
                 <div class=" text-right">
-                    <label for="manager" class="form-label required">Account Manager:</label>
+                    <label for="manager" class="form-label">Account Manager:</label>
                 </div>
                 <div class=" ">
                     <select class="select2 form-select dt-manager" id="manager" name="manager" aria-label="Select Account Manager" data-allow-clear="true" required>
@@ -269,8 +269,8 @@
                     <th>Email</th>
                     <th>Role ID</th>
                     <th>Role</th>
-                   @*  <th>Zone ID</th>
-                    <th>Zone</th> *@
+                     <th>Zone ID</th>
+                    <th>Zone</th> 
                     <th>Account Manager ID</th>
                     <th>Address</th>
                     <th>Account Manager</th>
@@ -658,6 +658,7 @@
 </script>
 <script>
     var zone, role, manager;
+    var fManager = [];
     $(document).ready(function () {
 
         $.get("/Admin/GetData", { sr1: "E" }, function(response) {
@@ -684,13 +685,14 @@
           
 
             // For Vendor Select input
-            // zone.forEach(function (item) {
+            zone.forEach(function (item) {
               
-            //     $('.dt-zone').append(`<option value="${item.SERIALNO}">${item.DEPARTMENT}</option>`);
-            // });
+                $('.dt-zone').append(`<option value="${item.SERIALNO}">${item.DEPARTMENT}</option>`);
+            });
             // For CAtegory select input
             role.forEach(function (item) {
                 $('.dt-role').append(`<option value="${item.USER_ROLE_ID}">${item.ROLENAME}</option>`);
+                
             });
             // For STate select input
             manager.forEach(function (item) {
@@ -700,7 +702,100 @@
             $('.select2').select2({
       dropdownParent: $('#add-new-record') // very important
     });
+            $('.dt-role').on('change', function () {
+                var zvalue = $('.dt-zone').val();
+                var rv = $(this).val();
+                switch (rv) {
+                        case '1':
+                            if(zvalue === null || zvalue === "")
+                            {
+                                fManager = [];
+                                manager.forEach(function (item) {
+                                    if(item.ROLEID === 1)
+                                    {
+                                        fManager.push(item);
+                                    }
 
+                                });
+                                $('.dt-manager').empty().append('<option value="">Select Account Manager</option>');
+                                fManager.forEach(item => {
+                                    $('.dt-manager').append(`<option value="${item.EMPID}">${item.ENAME}</option>`);
+                                });
+                                $('.dt-manager').trigger('change.select2');
+                            }
+                            else{
+                                fManager = [];
+                                manager.forEach(function (item) {
+                                    if(item.ROLEID === 1 && item.ZONEID === parseInt(zvalue) )
+                                    {
+                                        fManager.push(item);
+                                    }
+
+                                });
+                                $('.dt-manager').empty().append('<option value="">Select Account Manager</option>');
+                                fManager.forEach(item => {
+                                    $('.dt-manager').append(`<option value="${item.EMPID}">${item.ENAME}</option>`);
+                                });
+                                $('.dt-manager').trigger('change.select2');
+                            }
+                            
+                            
+                            break;
+                        case '2':
+                            fManager = [];
+                            manager.forEach(function (item) {
+                                if(item.ROLEID === 1)
+                                {
+                                    fManager.push(item);
+                                }
+
+                            });
+                            $('.dt-manager').empty().append('<option value="">Select Account Manager</option>');
+                            fManager.forEach(item => {
+                                $('.dt-manager').append(`<option value="${item.EMPID}">${item.ENAME}</option>`);
+                            });
+                            $('.dt-manager').trigger('change.select2');
+                            break;
+                        case '3':
+                            //manager = JSON.parse(item);
+                             if(zvalue === null || zvalue === "")
+                            {
+                                fManager = [];
+                                manager.forEach(function (item) {
+                                    if(item.ROLEID === 1 || item.ROLEID === 2)
+                                    {
+                                        fManager.push(item);
+                                    }
+
+                                });
+                                $('.dt-manager').empty().append('<option value="">Select Account Manager</option>');
+                                fManager.forEach(item => {
+                                    $('.dt-manager').append(`<option value="${item.EMPID}">${item.ENAME}</option>`);
+                                });
+                                $('.dt-manager').trigger('change.select2');
+                            }
+                            else{
+                                fManager = [];
+                                manager.forEach(function (item) {
+                                    if( (item.ROLEID === 1 || item.ROLEID === 2) && ( item.ZONEID === parseInt(zvalue)) )
+                                    {
+                                        fManager.push(item);
+                                    }
+
+                                });
+                                $('.dt-manager').empty().append('<option value="">Select Account Manager</option>');
+                                fManager.forEach(item => {
+                                    $('.dt-manager').append(`<option value="${item.EMPID}">${item.ENAME}</option>`);
+                                });
+                                $('.dt-manager').trigger('change.select2');
+                            }
+                            
+                            break;
+
+                        default:
+                            // fallback if needed
+                }
+            });
         });
     })
 </script>

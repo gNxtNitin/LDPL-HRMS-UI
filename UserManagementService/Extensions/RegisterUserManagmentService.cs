@@ -51,6 +51,7 @@ namespace UserManagementService.Extensions
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IAdminPortalRepository, AdminPortalRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<ILeaveRepository, LeaveRepository>();
 
             return services; // Return the IServiceCollection for method chaining
 

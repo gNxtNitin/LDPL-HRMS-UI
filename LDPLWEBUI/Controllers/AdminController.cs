@@ -187,7 +187,7 @@ namespace LDPLWEBUI.Controllers
                 EName = sr1.EName,
                 Email = sr1.Email,
                 //EFName = sr1.EFName,
-                Password = string.IsNullOrEmpty(sr1.Password) ? sr1.Password : PasswordConfig.GetMd5Hash(sr1.Password),
+                Password = sr1.Password,
                 Designation = sr1.Designation,
                 Department = sr1.Department,
                 //Gender = sr1.Gender,

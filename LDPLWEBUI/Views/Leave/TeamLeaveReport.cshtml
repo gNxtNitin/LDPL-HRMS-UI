@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "_DashboardLayout";
+    ViewBag.Title = "Team DA Report";
+}
+
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="~/app-assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link href="~/app-assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <style>
+        .viewer-container {
+            width: 100%;
+            height: 80vh;
+            background: #f8f9fa;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .pdf-container iframe {
+            height: 100%;
+            width: 100%;
+            border: none;
+        }
+
+        .panzoom-container img {
+            max-height: 100%;
+            max-width: 100%;
+            display: block;
+            margin: auto;
+        }
+
+
+        .viewer-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            object-fit: contain;
+        }
+
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            z-index: 5;
+            filter: drop-shadow(0 0 4px black);
+            opacity: 1 !important;
+        }
+
+        .custom-checkbox {
+            border: 2px solid #fff;
+        }
+
+            .custom-checkbox:checked {
+                filter: invert(1);
+            }
+
+    </style>
+
+}
+
+
+@section PageScripts
+{
+    <script src="~/app-assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/panzoom@9.4.3/dist/panzoom.min.js"></script>
+    <script src="~/js/leave/TeamLeaveReport.js"></script>
+
+}
+
+
+
+
+<div class="card">
+
+    <div class="card-datatable table-responsive">
+        <table class="datatables-dareport table table-hover dt-table-striped">
+            <thead class="border-top bg-menu-theme text-white fw-2">
+                <tr>
+                    <th>
+                        <div class="form-check d-none d-flex align-items-center justify-content-center" id="select-all">
+                            <input class="form-check-input custom-checkbox" type="checkbox" name="select-all-rows" id="select-all-rows" title="Select/Deselect all rows">
+                        </div>
+                    </th>
+                    <th>ID</th>
+                    <th>EMP ID</th>
+                    <th>Date</th>
+                    <th>Reason</th>
+                    <th>From Date</th>
+                    <th>To Date</th>
+                    <th>Total Days</th>
+                    <th>IsHalfDay</th>
+                    <th>App Status</th>
+                    <th>HR Status</th>
+                    <th>APPROVAL</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
